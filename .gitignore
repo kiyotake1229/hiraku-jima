@@ -1,0 +1,8 @@
+.DS_Store
+ios-app/node_modules/
+ios-app/www/
+ios-app/ios/App/Pods/
+ios-app/ios/App/App/public/
+ios-app/ios/App/App.xcworkspace/xcuserdata/
+ios-app/ios/App/App.xcodeproj/xcuserdata/
+.claude/settings.local.json

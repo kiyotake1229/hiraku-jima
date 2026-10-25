@@ -1,0 +1,17 @@
+{
+  "appId": "work.ltv.hiraku",
+  "appName": "ひらく島",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#1b2a3a",
+    "scrollEnabled": false,
+    "allowsLinkPreview": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#1b2a3a"
+    }
+  }
+}
