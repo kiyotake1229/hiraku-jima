@@ -161,6 +161,15 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 .stat{background:rgba(255,255,255,.06);border-radius:10px;padding:8px 10px}
 .stat .v{font-size:18px;font-weight:800}
 .stat .k{font-size:11px;color:var(--sub)}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 4px;margin:6px 0}
+.bd{text-align:center;font-size:10px;color:var(--sub);line-height:1.3;cursor:pointer}
+.bd .ic{width:50px;height:50px;margin:0 auto 4px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);color:rgba(255,255,255,.3);transition:transform .15s}
+.bd .ic svg{width:24px;height:24px}
+.bd.done .ic{background:linear-gradient(135deg,#ffc857,#ff9f43);border-color:#ffe3a0;color:#2a1d06;box-shadow:0 4px 14px rgba(255,200,87,.35)}
+.bd.done{color:var(--text)}
+.bd:active .ic{transform:scale(.9)}
+.bd .bp{height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin:3px 6px 0;overflow:hidden}.bd .bp i{display:block;height:100%;background:var(--accent)}
+.review .stats{margin:6px 0 2px}.review .from svg{width:14px;height:14px;vertical-align:-2px}
 .title-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#ffc857,#ff9f43);color:#2a1d06;font-weight:800;padding:6px 12px;border-radius:999px;font-size:14px;margin:4px 0 8px}
 .card textarea{width:100%;height:90px;border:none;border-radius:10px;padding:8px;font-size:11px;background:rgba(255,255,255,.1);color:var(--text);resize:none;font-family:monospace;outline:none}
 .seg{display:flex;gap:4px;background:rgba(0,0,0,.25);border-radius:12px;padding:3px;margin:6px 0 4px}
@@ -266,6 +275,10 @@ const I = {
   leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19C5 9 11 5 20 4c-1 9-5 15-15 15z"/><path d="M5 19l8-8"/></svg>',
   starS:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"/></svg>',
   drag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/><path d="M8 9l-3 3 3 3M16 9l3 3-3 3M9 8l3-3 3 3M9 16l3 3 3-3"/></svg>',
+  bridge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17h20M4 17v-5M20 17v-5M4 12c4-5 12-5 16 0M8 17v-4M12 17v-5M16 17v-4"/></svg>',
+  music:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>',
+  medal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"/><path d="M8 9L6 2h4l2 4 2-4h4l-2 7"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/></svg>',
 };
 
 // ---------------------------------------------------------------- data
@@ -358,6 +371,7 @@ const B = {
   station: {n:'駅',           cat:'prod', era:3, big:true, cost:{c:3500,w:200,s:400},  coins:30, h:1.7, d:'2×2マス。コイン+30/秒。電車が走る'},
   mall:    {n:'ショッピングモール', cat:'prod', era:4, big:true, cost:{c:7000,w:200,s:700}, coins:40, happy:5, h:1.7, d:'2×2マス。コイン+40/秒、幸福+5'},
   stadium: {n:'スタジアム',   cat:'deco', era:4, big:true, cost:{c:8000,w:400,s:900},  happy:30, coins:10, h:1.7, d:'2×2マス。幸福+30、コイン+10/秒。夜に照明がつく'},
+  bridge:  {n:'橋',           cat:'none', era:1, cost:{w:15,s:5}, d:'海にかける橋。住民が渡り、向こうの島を開拓できる。家の隣なら道と同じ+25%'},
   '__big': {n:'大型建物の一部', cat:'none', cost:{}},
   wpagoda: {n:'五重塔',       cat:'deco', era:4, world:'wa', cost:{c:4500,w:500,s:500},   happy:20, coins:5, h:1.9, d:'幸福+20、コイン+5/秒'},
 };
@@ -415,6 +429,7 @@ const LAND_ACTS = {
   mine:  {n:'採掘',  ic:I.pick, d:'岩を砕いて石を得る'},
   plant: {n:'木を植える', ic:I.deco, d:'草地を森に戻す（5コイン）'},
   fill:  {n:'埋め立て', ic:I.wave, d:'水を土地にする（40石）村から'},
+  bridge:{n:'橋',  ic:I.bridge, d:'海に橋をかけて隣の島へ（木材15・石5）集落から'},
   remove:{n:'撤去',  ic:I.trash, d:'建物を取り壊す（半額戻る）'},
   hand:  {n:'えらぶ', ic:I.hand, d:'タップで情報を見る・コインを集める'},
 };
@@ -426,7 +441,7 @@ const tiles = [];              // {t:'g'|'w'|'s'|'r'|'f', own, b, p, v}
 let tool = {tab:'land', k:'hand'}; // 選択中のツール
 let dragPaint = false;
 let selected = -1;
-let audioOn = true, shadowsOn = true;
+let audioOn = true, shadowsOn = true, bgmOn = true;
 let sfxCtx = null;
 
 function rngFrom(seed){ let s = seed>>>0; return () => { s = (s*1664525 + 1013904223)>>>0; return s/4294967296; }; }
@@ -470,7 +485,7 @@ function genMap(seed, shape){
 
 function newState(){
   return {seed:(Math.random()*1e9)|0, coins:120, wood:40, stone:10, stars:0, pop:0, era:0, bought:0, time:Date.now(), tut:0, cam:null,
-    name:'', day:'', streak:0, quests:[], cnt:{}, life:{}, goals:[], bonusClaimed:false, world:'island', worlds:['island'], seasonLock:null, letter:null, maxPop:0, shape:'round'};
+    name:'', day:'', streak:0, quests:[], cnt:{}, life:{}, goals:[], bonusClaimed:false, world:'island', worlds:['island'], seasonLock:null, letter:null, maxPop:0, shape:'round', wk:null, review:null};
 }
 
 // ---------------------------------------------------------------- three setup
@@ -631,6 +646,7 @@ const ROOFS = [0xd9534f, 0xc0623f, 0x5b7fb5, 0x6a9a5b, 0x8b5e8c, 0xe0893d];
 function makeBuilding(k, v, lv){
   const g = new THREE.Group(); const wall = WALLS[(v*5|0)%5], rf = ROOFS[(v*6|0)%6];
   switch(k){
+    case 'bridge': { bx(g,1.04,0.07,0.5,0x9b6b3a,0,0,0); [-0.23,0.23].forEach(z=>{ bx(g,1.04,0.03,0.03,0xc49a6c,0,0.2,z); [-0.45,0,0.45].forEach(x=>bx(g,0.04,0.2,0.04,0x7a4f2b,x,0.07,z)); }); [[-0.38,-0.17],[0.38,0.17],[-0.38,0.17],[0.38,-0.17]].forEach(([x,z])=>bx(g,0.08,0.3,0.08,0x5a3a1a,x,-0.3,z)); break; }
     case 'sakura': { cyl(g,0.06,0.35,0x6b4321,0,0,0); sph(g,0.3,0xffb7d5,0,0.55,0); sph(g,0.22,0xffc9e0,0.18,0.46,0.1); sph(g,0.2,0xff9fc7,-0.17,0.48,-0.1); const pt=[]; for (let i=0;i<6;i++){ const q=sph(g,0.03,0xffd4e6,0,0.4,0); q.castShadow=false; pt.push(q);} anims.push({g,fn:(t)=>{ pt.forEach((q,i)=>{ const u=((t*0.22+i/6)%1); q.position.set(0.35*Math.sin(u*6+i), 0.75-u*0.72, 0.35*Math.cos(u*5+i)); }); }}); break; }
     case 'light': cyl(g,0.22,0.12,0x9aa3ad,0,0,0); for (let i=0;i<4;i++) cyl(g,0.14-i*0.012,0.24,i%2?0xe25555:0xffffff,0,0.12+i*0.24,0); cyl(g,0.12,0.16,0x3a4450,0,1.08,0); sph(g,0.1,0xfff2b0,0,1.3,0,GLOW); cone(g,0.15,0.12,0xe25555,0,1.38,0); break;
     case 'shrine': bx(g,0.5,0.34,0.4,0xf1d9b5,0,0,-0.12); roof(g,0.72,0.3,0.6,0x7a2e2b,0,0.34,-0.12); bx(g,0.06,0.52,0.06,0xe25555,-0.22,0,0.3); bx(g,0.06,0.52,0.06,0xe25555,0.22,0,0.3); bx(g,0.64,0.06,0.08,0xe25555,0,0.52,0.3); bx(g,0.5,0.05,0.06,0xe25555,0,0.4,0.3); bx(g,0.8,0.04,0.3,0xb9bec6,0,0,0.3); break;
@@ -759,7 +775,7 @@ function makeThumbs(){
 function bigCells(i){ const x=i%N, z=(i/N)|0; if (x>=N-1 || z>=N-1) return null; return [i, i+1, i+N, i+N+1]; }
 function neighbors8(i){ const x=i%N, z=(i/N)|0, out=[]; for (let dz=-1;dz<=1;dz++) for (let dx=-1;dx<=1;dx++){ if(!dx&&!dz) continue; const nx=x+dx,nz=z+dz; if(nx>=0&&nz>=0&&nx<N&&nz<N) out.push(nz*N+nx);} return out; }
 function neighbors4(i){ const x=i%N, z=(i/N)|0, out=[]; [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dz])=>{ const nx=x+dx,nz=z+dz; if(nx>=0&&nz>=0&&nx<N&&nz<N) out.push(nz*N+nx); }); return out; }
-function nearRoad(i){ return neighbors4(i).some(j => tiles[j].p && P[tiles[j].p].road); }
+function nearRoad(i){ return neighbors4(i).some(j => (tiles[j].p && P[tiles[j].p].road) || tiles[j].b==='bridge'); }
 
 let eco = {housing:0, food:6, happy:50, coins:0, wood:0, stone:0, popTarget:0, roadBonus:0, hm:1};
 // 隣接ボーナス（情報パネルにも出す）
@@ -847,10 +863,10 @@ function renderTabs(){
 function renderItems(){
   const el = $('items'); let html='';
   if (tool.tab==='land'){
-    ['hand','buy','clear','mine','up','rot','plant','fill','remove'].forEach(k=>{ const a=LAND_ACTS[k]; const lock = (k==='fill' && S.era<2);
-      const img = k==='plant' ? `<img src="${THUMB.plant}">` : `<div class="sw">${a.ic}</div>`;
-      const cs = k==='buy' ? `<span>${I.coin}${landCost()}</span>` : k==='plant' ? `<span>${I.coin}5</span>` : k==='fill' ? `<span>${I.stone}40</span>` : '<span>無料</span>';
-      html += `<div class="it ${tool.k===k?'on':''} ${lock?'lock':''}" data-k="${k}">${img}<div class="nm">${a.n}</div><div class="cs">${cs}</div>${lock?'<div class="lk">村から</div>':''}</div>`; });
+    ['hand','buy','clear','mine','up','rot','plant','fill','bridge','remove'].forEach(k=>{ const a=LAND_ACTS[k]; const lock = (k==='fill' && S.era<2) || (k==='bridge' && S.era<1);
+      const img = k==='plant' ? `<img src="${THUMB.plant}">` : k==='bridge' ? `<img src="${THUMB.bridge}">` : `<div class="sw">${a.ic}</div>`;
+      const cs = k==='buy' ? `<span>${I.coin}${landCost()}</span>` : k==='plant' ? `<span>${I.coin}5</span>` : k==='fill' ? `<span>${I.stone}40</span>` : k==='bridge' ? `<span>${I.wood}15</span><span>${I.stone}5</span>` : '<span>無料</span>';
+      html += `<div class="it ${tool.k===k?'on':''} ${lock?'lock':''}" data-k="${k}">${img}<div class="nm">${a.n}</div><div class="cs">${cs}</div>${lock?`<div class="lk">${k==='fill'?'村から':'集落から'}</div>`:''}</div>`; });
   } else if (tool.tab==='paint'){
     html += `<div class="it ${dragPaint?'on':''}" data-k="__drag"><div class="sw">${I.drag}</div><div class="nm">なぞって塗る</div><div class="cs"><span>${dragPaint?'ON':'OFF'}</span></div></div>`;
     html += `<div class="it ${tool.k==='__erase'?'on':''}" data-k="__erase"><div class="sw">${I.trash}</div><div class="nm">塗りを消す</div><div class="cs"><span>無料</span></div></div>`;
@@ -890,6 +906,7 @@ function setHint(){
   else if (tool.k==='mine') h.innerHTML='岩をタップして採掘（石が手に入る）';
   else if (tool.k==='plant') h.innerHTML='草地をタップして森にする';
   else if (tool.k==='fill') h.innerHTML='自分の土地に接した水をタップして埋め立てる';
+  else if (tool.k==='bridge') h.innerHTML='自分の土地か橋に接した<b>海</b>をタップして橋をかける。つなげていくと隣の島を開拓できる';
   else if (tool.k==='remove') h.innerHTML='建物をタップして撤去';
   else if (tool.k==='rot') h.innerHTML='建物をタップして向きを変える';
   else if (tool.k==='up') h.innerHTML='建物をタップして強化。Lv2で効果×1.6、Lv3で×2.4';
@@ -906,7 +923,7 @@ function act(i, k, sx, sy){
   const fail = m => { toast(m); sfx('no'); return false; };
   if (tl.b==='__big' && tl.ref!=null && ['hand','remove','up','rot'].includes(k)) return act(tl.ref, k, sx, sy);
   if (k==='rot'){ if (!tl.b) return fail('建物を選んでね'); tl.r=((tl.r||0)+1)%4; sfx('tick'); haptic(); refreshTile(i); flushInstances(); return true; }
-  if (k==='hand'){ if (tl.b && tl.own){ // コイン収集
+  if (k==='hand'){ if (tl.b && tl.b!=='bridge' && tl.own){ // コイン収集
       const g=buildMeshes[i]; if (g){ g.userData.bounce = 1; }
       const gain = Math.max(1, Math.round(incomePerSec()*4)); S.coins+=gain; float(sx,sy,'+'+gain); bump('rCoin'); sfx('coin'); haptic(8); hideInfo(); count('tap'); return true; }
     showInfo(i); return true; }
@@ -914,21 +931,26 @@ function act(i, k, sx, sy){
     if (!neighbors4(i).some(j=>tiles[j].own)) return fail('自分の土地に隣り合った場所を選んでね');
     const c=landCost(); if (S.coins<c) return fail(`コインが足りない（${c}必要）`);
     S.coins-=c; S.bought++; tl.own=true; float(sx,sy,'-'+c,'n'); sfx('land'); haptic(15); refreshTile(i); flushInstances(); renderItems(); setHint(); tutorial(1); count('buy'); return true; }
-  if (k==='fill'){ if (S.era<2) return fail('村になると埋め立てできます'); if (!isWater) return fail('水を選んでね');
+  if (k==='bridge'){ if (S.era<1) return fail('集落になると橋をかけられます'); if (tl.b==='bridge') return fail('もう橋があります'); if (tl.t!=='w') return fail('海を選んでね');
+    if (!neighbors4(i).some(j=>tiles[j].own)) return fail('自分の土地か橋に接した海を選んでね');
+    if (S.wood<15 || S.stone<5) return fail('材料が足りない（木材15・石5）'); S.wood-=15; S.stone-=5;
+    const sideLand = j => j>=0 && j<N*N && ((tiles[j].own && tiles[j].t!=='w') || tiles[j].b==='bridge'); const lx=i%N; const horiz = (lx>0 && sideLand(i-1)) || (lx<N-1 && sideLand(i+1));
+    tl.own=true; tl.b='bridge'; tl.l=1; tl.p=null; tl.r = horiz ? 0 : 1; float(sx,sy,'-15 木材','n'); sfx('place'); haptic(12); pop(i); refreshTile(i); flushInstances(); renderItems(); setHint(); count('bridge'); return true; }
+  if (k==='fill'){ if (S.era<2) return fail('村になると埋め立てできます'); if (!isWater) return fail('水を選んでね'); if (tl.b==='bridge') return fail('橋を撤去してから埋め立ててね');
     if (!tl.own && !neighbors4(i).some(j=>tiles[j].own)) return fail('自分の土地に接した水を選んでね');
     if (S.stone<40) return fail('石が足りない（40必要）'); S.stone-=40; tl.t='s'; tl.p=null; tl.own=true; float(sx,sy,'-40 石','n'); sfx('land'); haptic(15); puff(i,0x9fd6ff); refreshTile(i); flushInstances(); count('fill'); return true; }
   if (!tl.own) return fail('まず「開拓」で土地を買おう');
   if (k==='clear'){ if (tl.t!=='f'||isWater) return fail('森を選んでね'); const w=4+Math.round(tl.v*3); S.wood+=w; tl.t='g'; float(sx,sy,'+'+w+' 木材','w'); bump('rWood'); sfx('chop'); haptic(12); puff(i,0x6aa84f); refreshTile(i); flushInstances(); tutorial(2); count('clear'); return true; }
   if (k==='mine'){ if (tl.t!=='r') return fail('岩を選んでね'); const s=3+Math.round(tl.v*3); S.stone+=s; tl.t='g'; float(sx,sy,'+'+s+' 石','s'); bump('rStone'); sfx('rock'); haptic(12); puff(i,0xb4bcc6); refreshTile(i); flushInstances(); count('mine'); return true; }
   if (k==='plant'){ if (tl.b) return fail('建物があります'); if (isWater) return fail('水には植えられません'); if (tl.t==='f') return fail('もう森です'); if (S.coins<5) return fail('コインが足りない'); S.coins-=5; tl.t='f'; if (tl.p && P[tl.p].fl) tl.p=null; sfx('place'); haptic(); pop(i); refreshTile(i); flushInstances(); count('plant'); return true; }
-  if (k==='remove'){ if (!tl.b) return fail('建物がありません'); const b=B[tl.b]; const back={c:Math.floor((b.cost.c||0)/2),w:Math.floor((b.cost.w||0)/2),s:Math.floor((b.cost.s||0)/2),st:Math.floor((b.cost.st||0)/2)}; pay(back,+1); if (b.big){ bigCells(i).forEach(j=>{ if (j!==i && tiles[j].b==='__big'){ tiles[j].b=null; tiles[j].ref=undefined; refreshTile(j); } }); } tl.b=null; tl.l=1; tl.r=0; sfx('remove'); haptic(20); puff(i,0xdddddd); refreshTile(i); flushInstances(); calcEco(); renderRes(); return true; }
+  if (k==='remove'){ if (!tl.b) return fail('建物がありません'); const b=B[tl.b]; const back={c:Math.floor((b.cost.c||0)/2),w:Math.floor((b.cost.w||0)/2),s:Math.floor((b.cost.s||0)/2),st:Math.floor((b.cost.st||0)/2)}; pay(back,+1); if (b.big){ bigCells(i).forEach(j=>{ if (j!==i && tiles[j].b==='__big'){ tiles[j].b=null; tiles[j].ref=undefined; refreshTile(j); } }); } if (tl.b==='bridge') tl.own=false; tl.b=null; tl.l=1; tl.r=0; sfx('remove'); haptic(20); puff(i,0xdddddd); refreshTile(i); flushInstances(); calcEco(); renderRes(); return true; }
   if (k==='__erase'){ if (!tl.p) return fail('塗られていません'); if (P[tl.p].water && tl.b) return fail('建物があります'); tl.p=null; sfx('tick'); refreshTile(i); flushInstances(); return true; }
   if (k.startsWith('p:')){ const pk=k.slice(2); const pd=P[pk];
     if (tl.t==='w') return fail('海は塗れません。埋め立ててから');
     if (pd.water){ if (S.era<1) return fail('集落になると池を作れます'); if (tl.b) return fail('建物があります'); if (tl.t==='f'||tl.t==='r') return fail('先に伐採・採掘してね'); if (S.stone<10) return fail('石が足りない（10必要）'); S.stone-=10; }
     if (tl.p===pk) return true;
     tl.p = pk; if (pd.fl && tl.t==='f') tl.t='g'; sfx('tick'); refreshTile(i); flushInstances(); calcEco(); count('paint'); if (pd.fl) count('flowerpaint'); if (pd.water) count('pond'); if (pk==='snow') count('snowpaint'); return true; }
-  if (k==='up'){ if (!tl.b) return fail('建物を選んでね'); const lv=tl.l||1; if (lv>=3) return fail('もう最高レベル（Lv3）です'); const c=upCost(tl.b,lv); if (!canPay(c)) return fail('材料が足りない（'+costText(c)+'）');
+  if (k==='up'){ if (!tl.b) return fail('建物を選んでね'); if (tl.b==='bridge') return fail('橋は強化できません'); const lv=tl.l||1; if (lv>=3) return fail('もう最高レベル（Lv3）です'); const c=upCost(tl.b,lv); if (!canPay(c)) return fail('材料が足りない（'+costText(c)+'）');
     pay(c); tl.l=lv+1; sfx('land'); haptic(15); float(sx,sy,'Lv'+(lv+1)+'！'); refreshTile(i); flushInstances(); pop(i); calcEco(); renderRes(); count('up'); return true; }
   // 建物
   const b = B[k]; if (!b) return false;
@@ -957,8 +979,17 @@ function puff(i, color){ const x=i%N, z=(i/N)|0; for (let k=0;k<10;k++){ const m
 
 // ---------------------------------------------------------------- 住民（道を歩く）
 const walkers = []; const WCOL = [0xff6b6b,0x5ad1a6,0x8ecbff,0xffc857,0xb79be6,0xff8a5c];
-function makeWalker(){ const g=new THREE.Group(); const c=WCOL[(Math.random()*WCOL.length)|0]; const b=cyl(g,0.07,0.17,c,0,0,0); b.castShadow=false; const h=sph(g,0.075,0xf6d9b5,0,0.25,0); h.castShadow=false; const hair=sph(g,0.078,[0x3a2a1a,0x6b4321,0xd9a066,0x222][(Math.random()*4)|0],0,0.27,0); hair.scale.y=0.6; hair.castShadow=false; g.userData={i:-1,from:-1,t:1,speed:1}; return g; }
-function walkable(j){ const t=tiles[j]; return t.own && !t.b && t.t!=='w' && t.t!=='f' && t.t!=='r' && !(t.p&&P[t.p].water); }
+const pick = a => a[(Math.random()*a.length)|0];
+function makeWalker(){ // 世界ごとに住民の見た目が変わる
+  const g=new THREE.Group(); const k=T.k; const ns=o=>{ o.castShadow=false; return o; };
+  if (k==='future'){ const m=pick([0xcfd8e3,0x8e9bb0,0xb8c4d6]); ns(bx(g,0.13,0.16,0.1,m,0,0,0)); ns(bx(g,0.12,0.1,0.1,0xdfe6ee,0,0.19,0)); ns(bx(g,0.08,0.02,0.01,0x35e3ff,0,0.23,0.05,gmat(0x35e3ff))); ns(bx(g,0.012,0.05,0.012,0x8e9bb0,0,0.29,0)); ns(sph(g,0.022,0x35e3ff,0,0.35,0,gmat(0x35e3ff))); }
+  else if (k==='sea'){ ns(cyl(g,0.08,0.17,pick([0xffc857,0xff8a5c,0x5ad1a6,0xf0f4f8]),0,0,0)); ns(sph(g,0.075,0xf6d9b5,0,0.25,0)); ns(sph(g,0.1,0xcfefff,0,0.25,0,glass(0xcfefff))); ns(bx(g,0.07,0.11,0.04,0x9aa3ad,0,0.06,-0.085)); }
+  else if (k==='magic'){ ns(cyl(g,0.07,0.17,pick([0x8b4fd6,0x5a7cff,0xff6fa8,0x3fb89a]),0,0,0)); ns(sph(g,0.075,0xf6d9b5,0,0.25,0)); const hc=pick([0x4a2a6b,0x2a2a6b,0x6b2a4a]); ns(cone(g,0.1,0.18,hc,0,0.29,0)); ns(cyl(g,0.12,0.015,hc,0,0.285,0)); ns(sph(g,0.02,0xfff0a0,0,0.47,0,gmat(0xfff0a0))); }
+  else if (k==='wa'){ ns(cyl(g,0.08,0.18,pick([0x2a3a6b,0xc8432a,0xe8e4d8,0x6b4a8a,0x3a6b4a]),0,0,0)); ns(bx(g,0.17,0.03,0.17,pick([0xffc857,0xc8432a,0xf0f4f8]),0,0.09,0)); ns(sph(g,0.075,0xf6d9b5,0,0.26,0)); const h=ns(sph(g,0.078,0x222,0,0.28,0)); h.scale.y=0.6; ns(sph(g,0.035,0x222,0,0.34,0)); }
+  else if (k==='sky'){ ns(cyl(g,0.07,0.17,pick([0xffffff,0xeef4ff,0xcfe8ff]),0,0,0)); ns(sph(g,0.075,0xf6d9b5,0,0.25,0)); const hair=ns(sph(g,0.078,pick([0xffe9a8,0xd9a066,0xffffff]),0,0.27,0)); hair.scale.y=0.6; const w1=ns(bx(g,0.1,0.08,0.012,0xffffff,-0.1,0.08,-0.05)); w1.rotation.z=0.5; const w2=ns(bx(g,0.1,0.08,0.012,0xffffff,0.1,0.08,-0.05)); w2.rotation.z=-0.5; const halo=new THREE.Mesh(G.tor, gmat(0xfff0a0)); halo.scale.setScalar(0.14); halo.rotation.x=Math.PI/2; halo.position.y=0.37; g.add(halo); }
+  else { const c=pick(WCOL); ns(cyl(g,0.07,0.17,c,0,0,0)); ns(sph(g,0.075,0xf6d9b5,0,0.25,0)); const hair=ns(sph(g,0.078,pick([0x3a2a1a,0x6b4321,0xd9a066,0x222]),0,0.27,0)); hair.scale.y=0.6; }
+  g.userData={i:-1,from:-1,t:1,speed:1}; return g; }
+function walkable(j){ const t=tiles[j]; return t.b==='bridge' || (t.own && !t.b && t.t!=='w' && t.t!=='f' && t.t!=='r' && !(t.p&&P[t.p].water)); }
 function updateWalkers(dt){
   const want = Math.min(16, Math.floor(S.pop/4));
   if (walkers.length<want){ const cands=[]; for (let i=0;i<N*N;i++) if (walkable(i)) cands.push(i); if (cands.length){ const g=makeWalker(); const i=cands[(Math.random()*cands.length)|0]; g.userData.i=i; g.userData.from=i; g.position.set(i%N,0.5,(i/N)|0); world.add(g); walkers.push(g); } }
@@ -967,7 +998,7 @@ function updateWalkers(dt){
     if (u.t>=1){
       const ns=neighbors4(u.i).filter(walkable);
       if (!ns.length){ world.remove(g); walkers.splice(w,1); continue; }
-      const roads=ns.filter(j=>tiles[j].p&&P[tiles[j].p].road); const pick=(roads.length && Math.random()<0.85) ? roads : ns; const j=pick[(Math.random()*pick.length)|0];
+      const roads=ns.filter(j=>(tiles[j].p&&P[tiles[j].p].road) || tiles[j].b==='bridge'); const pick=(roads.length && Math.random()<0.85) ? roads : ns; const j=pick[(Math.random()*pick.length)|0];
       u.from=u.i; u.i=j; u.t=0; u.speed=0.5+Math.random()*0.4; g.rotation.y=Math.atan2((j%N)-(u.from%N), ((j/N)|0)-((u.from/N)|0));
     }
     u.t+=dt*u.speed; const a=Math.min(1,u.t); const fx=u.from%N, fz=(u.from/N)|0, tx=u.i%N, tz=(u.i/N)|0;
@@ -993,8 +1024,18 @@ function genQuests(){ const keys=Object.keys(QUEST_DEFS).filter(k=>QUEST_DEFS[k]
 function questReward(q){ return {c: Math.max(30, Math.round(incomePerSec()*40)), st: (q&&q.s)?2:1}; }
 function loginBonus(){ const s=Math.min(7,S.streak); return {c: Math.max(50, Math.round(incomePerSec()*60*(1+s*0.25))), w:10*s, s:5*s, st: s>=7?2:(s>=3?1:0)}; }
 function checkQuests(){ let hit=false; for (const q of S.quests){ if (!q.done && (S.cnt[q.k]||0)>=q.need){ q.done=true; hit=true; } } if (hit){ toast('おねがい達成！右上のリストで受け取ろう'); sfx('coin'); renderBadge(); } }
-function newDay(){ const t=todayStr(); if (S.day===t) return false; const y=new Date(); y.setDate(y.getDate()-1); S.streak = (S.day===todayStr(y)) ? S.streak+1 : 1; S.day=t; S.cnt={}; S.quests=genQuests(); S.bonusClaimed=false; S.life.days=(S.life.days||0)+1; if (!S.letter || S.letter.claimed) S.letter=pickLetter(); return true; }
-const cntB = f => tiles.reduce((n,t)=>n+((t.own&&t.b&&t.b!=='__big'&&(!f||f(t)))?1:0),0);
+function newDay(){ const t=todayStr(); if (S.day===t) return false; const y=new Date(); y.setDate(y.getDate()-1); S.streak = (S.day===todayStr(y)) ? S.streak+1 : 1; S.day=t; S.cnt={}; S.quests=genQuests(); S.bonusClaimed=false; S.life.days=(S.life.days||0)+1; if (!S.letter || S.letter.claimed) S.letter=pickLetter();
+  // 週のふりかえり: 月曜（または7日たったら）に先週の成果をまとめる
+  if (!S.wk) S.wk=wkSnap(); else if (new Date().getDay()===1 || daysBetween(S.wk.day, t)>=7){ S.review=wkReview(); S.wk=wkSnap(); }
+  return true; }
+function daysBetween(a, b){ const p=x=>{ const [y,m,d]=x.split('-').map(Number); return Date.UTC(y,m-1,d); }; return Math.round((p(b)-p(a))/86400000); }
+function wkSnap(){ const L=S.life; return {day:todayStr(), pop:S.pop, build:L.build||0, paint:L.paint||0, buy:L.buy||0, clear:L.clear||0, up:L.up||0, photo:L.photo||0, bridge:L.bridge||0, goals:S.goals.length, days:(L.days||0)-1}; }
+function wkReview(){ const w=S.wk, L=S.life; return {from:w.day, to:todayStr(), pop:S.pop, dpop:S.pop-w.pop, build:(L.build||0)-w.build, paint:(L.paint||0)-w.paint, buy:(L.buy||0)-w.buy, clear:(L.clear||0)-w.clear, up:(L.up||0)-w.up, photo:(L.photo||0)-w.photo, goals:S.goals.length-w.goals, days:Math.max(1,Math.min(7,(L.days||0)-1-w.days)), seen:false}; }
+function reviewHtml(r, withBtn){ const md = s => { const [y,m,d]=s.split('-'); return `${+m}/${+d}`; };
+  const msg = r.dpop>=50 ? '大発展の一週間！' : r.dpop>0 ? 'じわじわ育っている。いい調子' : r.build>0||r.paint>0 ? '形を整えた一週間。次は人口を伸ばそう' : 'のんびりした一週間。今週は家を1軒から';
+  const st=[['人口', (r.dpop>=0?'+':'')+r.dpop+'人'],['建てた',r.build+'回'],['塗った',r.paint+'マス'],['開拓',r.buy+'マス'],['達成した目標',r.goals+'件'],['遊んだ日',r.days+'日']];
+  return `<div class="letter review"><div class="from">${I.quest} 先週のふりかえり（${md(r.from)}〜${md(r.to)}）</div><div class="stats">${st.map(([k,v])=>`<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`).join('')}</div><div class="body">${msg}${r.days>=3&&withBtn?' 3日以上遊んだごほうびに星1':''}</div>${withBtn?`<div class="foot"><div class="qr">${r.days>=3?rewardHtml({st:1}):''}</div><button class="btn p" data-claim="review">${r.days>=3?'受け取る':'OK'}</button></div>`:''}</div>`; }
+const cntB = f => tiles.reduce((n,t)=>n+((t.own&&t.b&&t.b!=='__big'&&t.b!=='bridge'&&(!f||f(t)))?1:0),0);
 const GOALS = [
   {id:'pop10',  n:'人口10人',            v:()=>S.pop, need:10,  r:{c:100,st:1}},
   {id:'b5',     n:'建物を5棟',           v:()=>cntB(), need:5, r:{c:80,w:20,st:1}},
@@ -1008,12 +1049,13 @@ const GOALS = [
   {id:'lv2',    n:'建物を強化する',      v:()=>cntB(t=>(t.l||1)>=2), need:1, r:{c:150,st:1}},
   {id:'streak3',n:'3日連続で遊ぶ',       v:()=>S.streak, need:3, r:{c:300,st:2}},
   {id:'b20',    n:'建物を20棟',          v:()=>cntB(), need:20, r:{c:800,st:2}},
-  {id:'kinds10',n:'10種類の建物を建てる', v:()=>new Set(tiles.filter(t=>t.own&&t.b&&t.b!=='__big').map(t=>t.b)).size, need:10, r:{c:1000,st:2}},
+  {id:'kinds10',n:'10種類の建物を建てる', v:()=>new Set(tiles.filter(t=>t.own&&t.b&&t.b!=='__big'&&t.b!=='bridge').map(t=>t.b)).size, need:10, r:{c:1000,st:2}},
   {id:'land120',n:'土地を120マスに',     v:()=>tiles.filter(t=>t.own).length, need:120, r:{c:1500,st:2}},
   {id:'pop100', n:'人口100人',           v:()=>S.pop, need:100, r:{c:2000,st:2}},
   {id:'paint50',n:'地面を50マス塗る',    v:()=>tiles.filter(t=>t.own&&t.p).length, need:50, r:{c:800,st:2}},
   {id:'lv3',    n:'Lv3の建物を作る',     v:()=>cntB(t=>(t.l||1)>=3), need:1, r:{c:1000,st:2}},
   {id:'fill5',  n:'海を5マス埋め立てる', v:()=>S.life.fill||0, need:5, r:{s:200,st:2}},
+  {id:'bridge5',n:'橋を5マスかける',     v:()=>S.life.bridge||0, need:5, r:{c:1200,w:100,st:2}},
   {id:'star1',  n:'星の建物を建てる',    v:()=>cntB(t=>B[t.b].cost.st), need:1, r:{c:1500,st:1}},
   {id:'event1', n:'季節のイベント建物を建てる', v:()=>cntB(t=>B[t.b].season!=null), need:1, r:{c:500,st:1}},
   {id:'world1', n:'新しい世界をひらく',  v:()=>S.worlds.length-1, need:1, r:{c:2000,st:2}},
@@ -1063,6 +1105,8 @@ function titleOf(){ let t=TITLES[0][1]; for (const [n,name] of TITLES) if (S.goa
 function nextTitle(){ for (const [n,name] of TITLES) if (S.goals.length<n) return {n,name}; return null; }
 function claimableCount(){ if (!S) return 0; let n = S.bonusClaimed?0:1; if (S.letter && S.letter.done && !S.letter.claimed) n++; n += S.quests.filter(q=>q.done&&!q.claimed).length; n += GOALS.filter(g=>!S.goals.includes(g.id) && g.v()>=g.need).length; return n; }
 let lastBadge=-1;
+const GOAL_ICONS=[[/^pop/,'pop'],[/^(b\d|kinds)/,'build'],[/^(land|fill)/,'land'],[/^bridge/,'bridge'],[/^clear/,'axe'],[/^(paint|road)/,'paint'],[/^deco/,'deco'],[/^happy/,'happy'],[/^lv/,'up'],[/^streak/,'quest'],[/^(star|event)/,'starS'],[/^(world|mag|fut|sea|wa)/,'globe'],[/^letter/,'gift'],[/^photo/,'cam'],[/^era/,'flag']];
+function goalIcon(id){ for (const [re,k] of GOAL_ICONS) if (re.test(id)) return I[k]; return I.starS; }
 function renderBadge(){ const n=claimableCount(); if (n===lastBadge) return; lastBadge=n; $('bQuest').innerHTML = I.quest + (n?`<span class="badge">${n}</span>`:''); }
 function rewardHtml(r){ const a=[]; if (r.c) a.push(`<span>${I.coin}${fmt(r.c)}</span>`); if (r.w) a.push(`<span>${I.wood}${fmt(r.w)}</span>`); if (r.s) a.push(`<span>${I.stone}${fmt(r.s)}</span>`); if (r.st) a.push(`<span>${I.star}${r.st}</span>`); return a.join(''); }
 function giveReward(r){ S.coins+=r.c||0; S.wood+=r.w||0; S.stone+=r.s||0; S.stars+=r.st||0; }
@@ -1072,6 +1116,7 @@ function showQuests(tab, extraHtml){
   if (ovTab==='today'){
     const lb=loginBonus();
     body += extraHtml||'';
+    if (S.review && !S.review.seen) body += reviewHtml(S.review, true);
     body += `<div class="q ${S.bonusClaimed?'done':''}"><div class="qi">${I.gift}</div><div class="qt"><div class="qn">ログインボーナス<span class="tag">${S.streak}日連続</span></div><div class="qr">${rewardHtml(lb)}</div></div>${S.bonusClaimed?'<span class="tag g">受取済み</span>':'<button class="btn p" data-claim="bonus">受け取る</button>'}</div>`;
     body += `<div class="streak">${[1,2,3,4,5,6,7].map(d=>`<span class="${d<=((S.streak-1)%7)+1?'on':''}">${d}日</span>`).join('')}</div>`;
     body += `<div class="sub">今日のおねがい（達成で星がもらえる）</div>`;
@@ -1084,19 +1129,26 @@ function showQuests(tab, extraHtml){
     body += `<div class="title-badge">${I.star}${titleOf()}</div><div class="qr" style="margin-bottom:6px">${nt?`次の称号「${nt.name}」まで 目標あと${nt.n-S.goals.length}件`:'最高の称号です'}</div>`;
     const st=[['遊んだ日数',L.days||1],['最高人口',S.maxPop||S.pop],['達成した目標',`${S.goals.length}/${GOALS.length}`],['ひらいた世界',`${S.worlds.length}/${Object.keys(WORLDS).length}`],['建てた回数',L.build||0],['伐採した森',L.clear||0],['塗ったマス',L.paint||0],['開拓した土地',L.buy||0],['強化した回数',L.up||0],['撮った写真',L.photo||0],['連続ログイン',S.streak+'日'],['いまの時代',ERAS[S.era].n]];
     body += `<div class="stats">${st.map(([k,v])=>`<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`).join('')}</div>`;
+    if (S.review) body += reviewHtml(S.review, false); else body += `<p>月曜日になると「先週のふりかえり」がここに届きます。</p>`;
+  } else if (ovTab==='badges'){
+    const doneN=S.goals.length; const nt=nextTitle();
+    body += `<div class="title-badge">${I.medal}${titleOf()}</div><div class="qr" style="margin-bottom:6px">バッジ ${doneN} / ${GOALS.length}${nt?`　次の称号まであと${nt.n-doneN}個`:''}</div>`;
+    body += `<div class="badges">` + GOALS.map(g=>{ const done=S.goals.includes(g.id); const cur=Math.min(g.need,g.v()); return `<div class="bd ${done?'done':''}" data-b="${g.id}"><div class="ic">${goalIcon(g.id)}</div><div class="bn">${g.n}</div>${done?'':`<div class="bp"><i style="width:${cur/g.need*100}%"></i></div>`}</div>`; }).join('') + `</div>`;
   } else {
     const list = GOALS.map(g=>({g, done:S.goals.includes(g.id), can:g.v()>=g.need})).sort((a,b)=> ((b.can&&!b.done)?1:0)-((a.can&&!a.done)?1:0) || (a.done?1:0)-(b.done?1:0));
     const doneN = list.filter(x=>x.done).length;
     body += `<div class="sub">達成 ${doneN} / ${GOALS.length}</div><div class="list">` + list.map(({g,done,can})=>{ const cur=Math.min(g.need,g.v());
       return `<div class="q ${done?'done':''}"><div class="qi">${I.starS}</div><div class="qt"><div class="qn">${g.n}</div>${done?'':`<div class="qp"><i style="width:${cur/g.need*100}%"></i></div>`}<div class="qr">${rewardHtml(g.r)}</div></div>${done?'<span class="tag g">達成</span>':(can?`<button class="btn p" data-claim="g:${g.id}">受け取る</button>`:`<span class="tag">${fmt(cur)}/${fmt(g.need)}</span>`)}</div>`; }).join('') + `</div>`;
   }
-  overlay(`<h2>${I.quest}毎日コツコツ</h2><div class="ovtabs"><button class="tab ${ovTab==='today'?'on':''}" data-t="today">今日</button><button class="tab ${ovTab==='goals'?'on':''}" data-t="goals">目標</button><button class="tab ${ovTab==='stats'?'on':''}" data-t="stats">記録</button></div>${body}<div class="row"><button class="btn p" id="bOk">閉じる</button></div>`);
+  overlay(`<h2>${I.quest}毎日コツコツ</h2><div class="ovtabs"><button class="tab ${ovTab==='today'?'on':''}" data-t="today">今日</button><button class="tab ${ovTab==='goals'?'on':''}" data-t="goals">目標</button><button class="tab ${ovTab==='badges'?'on':''}" data-t="badges">バッジ</button><button class="tab ${ovTab==='stats'?'on':''}" data-t="stats">記録</button></div>${body}<div class="row"><button class="btn p" id="bOk">閉じる</button></div>`);
   $('bOk').onclick=closeOv;
+  $('ovCard').querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{ const g=GOALS.find(x=>x.id===b.dataset.b); if (!g) return; const done=S.goals.includes(g.id); toast(done ? `${g.n}: 達成！` : `${g.n}: ${fmt(Math.min(g.need,g.v()))} / ${fmt(g.need)}`); });
   $('ovCard').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>showQuests(b.dataset.t));
   $('ovCard').querySelectorAll('[data-claim]').forEach(b=>b.onclick=()=>{ const c=b.dataset.claim;
     if (c==='bonus'){ if (S.bonusClaimed) return; giveReward(loginBonus()); S.bonusClaimed=true; }
     else if (c[0]==='q'){ const q=S.quests[+c.slice(1)]; if (!q||q.claimed||!q.done) return; giveReward(questReward(q)); q.claimed=true; }
     else if (c==='letter'){ if (!S.letter||!S.letter.done||S.letter.claimed) return; giveReward(letterReward()); S.letter.claimed=true; count('letter'); }
+    else if (c==='review'){ if (!S.review||S.review.seen) return; if (S.review.days>=3) giveReward({st:1}); S.review.seen=true; }
     else { const id=c.slice(2); const g=GOALS.find(x=>x.id===id); if (!g||S.goals.includes(id)||g.v()<g.need) return; giveReward(g.r); S.goals.push(id); }
     sfx('fanfare'); haptic([10,30,10]); renderRes(); renderItems(); lastBadge=-1; renderBadge(); showQuests(ovTab); });
 }
@@ -1150,7 +1202,7 @@ function applyTheme(){
   curTint.setRGB(g[0]*sg[0], g[1]*sg[1], g[2]*sg[2]);
   seabed.material.color.setHex(T.seabed||0x1f6f99);
   scene.fog.near=T.fog[0]; scene.fog.far=T.fog[1]; hemi.color.setHex(T.hemi[0]); hemi.groundColor.setHex(T.hemi[1]); waterM.material.color.setHex(T.water);
-  ambSetup(ambTypeFor()); setRoamers(T.roam); refreshAll();
+  ambSetup(ambTypeFor()); setRoamers(T.roam); walkers.forEach(g=>world.remove(g)); walkers.length=0; refreshAll();
 }
 function showWorlds(){
   const si=seasonIdx(), sp=SEASONS[si]; const ev=Object.keys(B).find(k=>B[k].season===si);
@@ -1210,7 +1262,7 @@ function showInfo(i){
     if (tl.b==='farm'||tl.b==='bigfarm'){ notes.push(nearWaterOrMill(i) ? '池か風車が隣で食料×1.5' : '池か風車を隣に置くと食料×1.5'); }
     if (tl.b==='market'){ const n=nearHomes(i); notes.push(`隣の家${n}軒でコイン+${(0.3*n).toFixed(1)}/秒`); }
     if (notes.length) d += '。' + notes.join('。');
-    if (lv<3) acts.push(['up',`強化 Lv${lv+1}（${costText(upCost(tl.b,lv))}）`,'g',I.up]);
+    if (lv<3 && tl.b!=='bridge') acts.push(['up',`強化 Lv${lv+1}（${costText(upCost(tl.b,lv))}）`,'g',I.up]);
     acts.push(['remove','撤去','d',I.trash]); }
   else if (!tl.own){ d = tl.t==='w' ? '海。村になったら埋め立てて土地にできる（石40）' : `開拓して自分の土地にする（${landCost()}コイン）`; if (tl.t!=='w') acts.push(['buy','開拓する','p',I.flag]); else if (S.era>=2 && neighbors4(i).some(j=>tiles[j].own)) acts.push(['fill','埋め立て（石40）','g',I.wave]); }
   else if (isWater){ d='池。埋め立てると建てられる'; if (S.era>=2) acts.push(['fill','埋め立て（石40）','g',I.wave]); }
@@ -1303,11 +1355,14 @@ function showSettings(){
   overlay(`<h2>${I.set}設定</h2>
     <div class="sub">街の名前</div><input id="inName" maxlength="12" placeholder="（例）ひらく島" value="${(S.name||'').replace(/"/g,'&quot;')}">
     <label>効果音 <button class="sw2 ${audioOn?'on':''}" id="swSnd"></button></label>
+    <label>BGM（世界ごとに曲が変わる） <button class="sw2 ${bgmOn?'on':''}" id="swBgm"></button></label>
     <label>影を表示（軽くしたいときはOFF） <button class="sw2 ${shadowsOn?'on':''}" id="swSh"></button></label>
     <p style="margin-top:12px">データはこの端末の中だけに保存されます。通信はしません。</p>
     <div class="row"><button class="btn" id="bHelp">${I.tap}遊び方</button><button class="btn" id="bExport">${I.quest}データを書き出す</button></div>
     <div class="row"><button class="btn" id="bImport">${I.drag}データを読み込む</button><button class="btn d" id="bReset">${I.trash}最初から</button></div>
-    <div class="row"><button class="btn p" id="bOk">閉じる</button></div>`);
+    <div class="row"><button class="btn" id="bFb">${I.chat}ご意見・不具合を送る</button><button class="btn p" id="bOk">閉じる</button></div>`);
+  $('bFb').onclick=()=>{ const u='https://github.com/kiyotake1229/hiraku-jima/issues/new'; try{ const w=window.open(u,'_blank','noopener'); if (!w) location.href=u; }catch(e){ location.href=u; } };
+  $('swBgm').onclick=()=>{ bgmOn=!bgmOn; LS.set('hiraku.bgm', bgmOn?'1':'0'); $('swBgm').classList.toggle('on',bgmOn); if (bgmOn) initAudio(); };
   $('bExport').onclick=()=>{ save(); const raw=LS.get(SAVE_KEY)||''; const code='HIRAKU1.'+btoa(unescape(encodeURIComponent(raw)));
     overlay(`<h2>${I.quest}データを書き出す</h2><p>この文字列を保存しておくと、別の端末や機種変更後に「データを読み込む」で島を戻せます。</p><textarea id="taOut" readonly>${code}</textarea>
       <div class="row"><button class="btn p" id="bCopy">コピー</button><button class="btn" id="bShareD">共有</button><button class="btn" id="bOk">閉じる</button></div>`);
@@ -1341,10 +1396,11 @@ function showHelp(){
     <li><b>塗る</b>タブで地面に色を塗って、自分だけの模様の世界を描こう</li>
     <li><b>毎日コツコツ</b>: 毎日開くと連続ボーナス。「今日のおねがい」3つと「目標」を達成すると<b>星</b>がもらえる</li>
     <li>星は さくら・灯台・神社・気球 と交換。建物は<b>強化</b>でLv3まで育つ</li>
-    <li><b>季節</b>は日付で変わり、限定の建物と季節のおねがいが出る。星で<b>魔法の国・和風の城下町・未来都市・海底都市</b>の世界をひらける（右の地球ボタン）</li>
+    <li><b>季節</b>は日付で変わり、限定の建物と季節のおねがいが出る。星で<b>魔法の国・和風の城下町・未来都市・海底都市・空中都市</b>の世界をひらける（右の地球ボタン）。世界ごとに住民の姿とBGMが変わる</li>
     <li>カメラボタンで<b>島の写真</b>を撮って共有できる。住民からの<b>手紙</b>の願いをかなえると星がもらえる</li>
     <li>設定の「データを書き出す」で、機種変更しても島を引き継げる</li>
     <li>駅・モール・スタジアムは<b>2×2マス</b>の大型建物。「回転」で建物の向きを変えられる</li>
+    <li>集落になると海に<b>橋</b>をかけられる（開拓タブ）。橋をつなげて隣の島を開拓しよう。月曜には<b>先週のふりかえり</b>、達成した目標は<b>バッジ</b>に</li>
     <li>1本指でドラッグ: 移動 / 2本指: ズーム / 右の回転ボタン: 視点回転</li></ul>
     <div class="row"><button class="btn p" id="bOk">はじめる</button></div>`);
   $('bOk').onclick=closeOv;
@@ -1377,6 +1433,37 @@ function sfx(k){
     case 'remove': { const o=tone(300,t,0.2,'sawtooth',0.07); o.frequency.exponentialRampToValueAtTime(80,t+0.2); } break;
     case 'no': tone(180,t,0.12,'square',0.06); break;
     case 'fanfare': [523,659,784,1046].forEach((f,i)=>tone(f,t+i*0.12,0.3,'triangle',0.12)); break;
+  }
+}
+
+// ---------------------------------------------------------------- BGM（世界ごとに生成する短いループ。音源ファイルなし）
+const BGM_DEF = {
+  island:{bpm:92,  type:'triangle', scale:[0,2,4,7,9],   base:523.25, bass:'sine',     vol:0.05,  lp:3200},
+  magic: {bpm:76,  type:'sine',     scale:[0,2,3,7,8],   base:493.88, bass:'triangle', vol:0.05,  lp:2600},
+  wa:    {bpm:68,  type:'sine',     scale:[0,1,5,7,8],   base:440,    bass:'sine',     vol:0.05,  lp:2400},
+  future:{bpm:118, type:'square',   scale:[0,3,5,7,10],  base:440,    bass:'sawtooth', vol:0.022, lp:1800},
+  sea:   {bpm:58,  type:'sine',     scale:[0,2,5,7,9],   base:392,    bass:'sine',     vol:0.055, lp:900},
+  sky:   {bpm:100, type:'triangle', scale:[0,4,5,7,11],  base:659.25, bass:'sine',     vol:0.045, lp:3600},
+};
+let bgmGain=null, bgmFilt=null; const bgm={world:null, pat:null, step:0, next:0};
+function bgmPattern(k){ let h=7; for (const ch of k) h=(h*31+ch.charCodeAt(0))>>>0; const rnd=rngFrom(h); const mel=[]; let deg=0;
+  for (let i=0;i<64;i++){ if (i%16===0) deg=0; if (rnd()<0.24 && i%8!==0){ mel.push(null); continue; } deg += Math.round((rnd()-0.5)*4); deg=Math.max(-2,Math.min(8,deg)); mel.push(deg); }
+  return {mel, bass:[0,3,4,1]}; }
+function bgmFreq(d, deg){ const n=d.scale.length; const o=Math.floor(deg/n); const st=d.scale[((deg%n)+n)%n]; return d.base*Math.pow(2, o+st/12); }
+function bgmNote(f,t,dur,type,vol){ const o=sfxCtx.createOscillator(), g=sfxCtx.createGain(); o.type=type; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(vol,t+0.03); g.gain.setValueAtTime(vol,t+Math.max(0.04,dur-0.1)); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.connect(g); g.connect(bgmFilt); o.start(t); o.stop(t+dur+0.05); }
+function bgmTick(){
+  if (!S || !sfxCtx || !audioOn || !bgmOn || document.hidden || sfxCtx.state!=='running') return;
+  if (!bgmGain){ bgmFilt=sfxCtx.createBiquadFilter(); bgmFilt.type='lowpass'; bgmGain=sfxCtx.createGain(); bgmGain.gain.value=1; bgmFilt.connect(bgmGain); bgmGain.connect(sfxCtx.destination); }
+  const k = BGM_DEF[T.k] ? T.k : 'island'; const d=BGM_DEF[k];
+  if (bgm.world!==k){ bgm.world=k; bgm.pat=bgmPattern(k); bgm.step=0; bgm.next=sfxCtx.currentTime+0.15; bgmFilt.frequency.value=d.lp; }
+  if (bgm.next < sfxCtx.currentTime-0.5) bgm.next=sfxCtx.currentTime+0.05;   // 画面を離れていたあとは、まとめて鳴らさず続きから
+  const spb = 60/d.bpm/2;   // 8分音符
+  while (bgm.next < sfxCtx.currentTime+0.5){
+    const t=bgm.next, st=bgm.step; const deg=bgm.pat.mel[st%64];
+    if (deg!=null) bgmNote(bgmFreq(d,deg), t, spb*0.95, d.type, d.vol);
+    if (st%8===0){ const bd=bgm.pat.bass[(st/8|0)%4]; bgmNote(bgmFreq(d,bd)/4, t, spb*7.5, d.bass, d.vol*0.8); }
+    if (st%16===0){ const bd=bgm.pat.bass[(st/8|0)%4]; [bd, bd+2, bd+4].forEach(x=>bgmNote(bgmFreq(d,x)/2, t, spb*15.5, 'sine', d.vol*0.3)); }
+    bgm.next += spb; bgm.step++;
   }
 }
 
@@ -1432,7 +1519,7 @@ function frame(now){
     if (g.userData.bounce){ g.userData.bounce-=dt*3; const b=Math.max(0,g.userData.bounce); g.scale.set(1+b*0.12,1-b*0.15+Math.sin(b*Math.PI)*0.2,1+b*0.12); if (b<=0){ g.scale.set(1,1,1); g.userData.bounce=0; } } }
   for (let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.userData.life-=dt*(p.userData.decay||1.6); p.userData.v.y-=(p.userData.g!==undefined?p.userData.g:9)*dt; p.position.addScaledVector(p.userData.v, dt); p.rotation.x+=dt*5; p.rotation.z+=dt*3; p.scale.setScalar(Math.max(0.01,p.userData.life)*(p.userData.base||1)); if (p.userData.life<=0){ world.remove(p); particles.splice(i,1); } }
   selMesh.material.opacity = 0.45+0.25*Math.sin(t*6);
-  if (S){ updateWalkers(dt); ambUpdate(dt, t, night); roamUpdate(dt, t); }
+  if (S){ updateWalkers(dt); ambUpdate(dt, t, night); roamUpdate(dt, t); bgmTick(); }
   renderer.render(scene, camera);
 }
 function resize(){ renderer.setSize(innerWidth, innerHeight, false); camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); updateCamera(); }
@@ -1440,7 +1527,7 @@ window.addEventListener('resize', resize);
 
 // ---------------------------------------------------------------- boot
 function boot(){
-  audioOn = LS.get('hiraku.snd')!=='0'; shadowsOn = LS.get('hiraku.shadow')!=='0';
+  audioOn = LS.get('hiraku.snd')!=='0'; shadowsOn = LS.get('hiraku.shadow')!=='0'; bgmOn = LS.get('hiraku.bgm')!=='0';
   renderer.shadowMap.enabled = shadowsOn; sun.castShadow = shadowsOn; renderSnd();
   makeThumbs();
   const loaded = load();
@@ -1451,14 +1538,14 @@ function boot(){
   let gains='';
   if (loaded){ const sec = Math.min(6*3600, (Date.now()-S.time)/1000); if (sec>60){ const c=Math.floor(incomePerSec()*sec*0.5), w=Math.floor(eco.wood*sec*0.5), st=Math.floor(eco.stone*sec*0.5); S.coins+=c; S.wood+=w; S.stone+=st;
     const m = Math.floor(sec/60); gains = `<p><b>おかえり！</b> 留守の${m>=60?Math.floor(m/60)+'時間':m+'分'}のあいだに島が育ちました: コイン +${fmt(c)}${w?` / 木材 +${fmt(w)}`:''}${st?` / 石 +${fmt(st)}`:''}</p>`; } }
-  const nd = newDay(); if (!S.letter) S.letter=pickLetter(); lastBadge=-1; renderBadge();
+  const nd = newDay(); if (!S.letter) S.letter=pickLetter(); if (!S.wk) S.wk=wkSnap(); lastBadge=-1; renderBadge();
   if (!loaded) setTimeout(showShapeSelect, 300);
-  else if (nd || gains) showQuests('today', gains);
+  else if (nd || gains || (S.review && !S.review.seen)) showQuests('today', gains);
   nativeScheduleQuestNotice();
   requestAnimationFrame(frame);
   setTimeout(()=>$('loading').classList.add('hide'), 200);
 }
-window.__hiraku = { get S(){ return S; }, tiles, eco:()=>eco, act, calcEco, renderRes, tileAt, cam, updateCamera, applyTheme };
+window.__hiraku = { get S(){ return S; }, tiles, eco:()=>eco, act, calcEco, renderRes, tileAt, cam, updateCamera, applyTheme, walkers, bgm, showQuests };
 try { boot(); } catch(e){ document.getElementById('loading').innerHTML = '<h1>エラー</h1><small>'+e.message+'</small>'; console.error(e); }
 })();
 </script>
