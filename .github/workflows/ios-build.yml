@@ -123,6 +123,8 @@ jobs:
           ID=$($PB -c "Print :CFBundleIdentifier" "$APP/Info.plist")
           [ "$ID" = "work.ltv.hiraku" ] || { echo "::error::Bundle ID が違います: $ID"; exit 1; }
           [ "$($PB -c "Print :ITSAppUsesNonExemptEncryption" "$APP/Info.plist")" = "false" ] || { echo "::error::ITSAppUsesNonExemptEncryption が false ではありません"; exit 1; }
+          [ "$($PB -c "Print :CFBundleDevelopmentRegion" "$APP/Info.plist")" = "ja" ] || { echo "::error::CFBundleDevelopmentRegion が ja ではありません（許可のダイアログなどが英語で出る）"; exit 1; }
+          $PB -c "Print :CFBundleLocalizations" "$APP/Info.plist" | grep -q "^ *ja$" || { echo "::error::CFBundleLocalizations に ja がありません"; exit 1; }
           $PB -c "Print :NSPhotoLibraryAddUsageDescription" "$APP/Info.plist" >/dev/null || { echo "::error::NSPhotoLibraryAddUsageDescription がありません（共有シートで画像を保存すると落ちる）"; exit 1; }
           # three.js を同梱していること（CDN に頼らず圏外でも動く）
           test -s "$APP/public/three.min.js" || { echo "::error::three.min.js が同梱されていません"; exit 1; }
