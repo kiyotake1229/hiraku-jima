@@ -4,7 +4,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 状態 | **Web版 v1.7 完成（遊べる）・PWA対応・GitHub Pages 公開済み・iOS プロジェクト作成済み**。毎日要素・目標・強化・季節・5つの世界・写真共有・橋・BGM・週間ふりかえり・バッジに加え、v1.7 で合体と図鑑・島コードの見学・航海で増える島・住民との会話・じぶんの建物エディタを実装済み。iOS化は `ios-app/` に Capacitor プロジェクトと引き渡し手順書あり（Xcode での実ビルドは未確認。作成環境に Xcode なし） |
+| 状態 | **Web版 v1.7 完成（遊べる）・PWA対応・GitHub Pages 公開済み・iOS プロジェクト作成済み**。毎日要素・目標・強化・季節・5つの世界・写真共有・橋・BGM・週間ふりかえり・バッジに加え、v1.7 で合体と図鑑・島コードの見学・航海で増える島・住民との会話・じぶんの建物エディタを実装済み。iOS化は `ios-app/` に Capacitor プロジェクトと引き渡し手順書あり（GitHub Actions の Xcode 26 でビルド確認済み。実機は未確認。プライバシーマニフェストと暗号化の申告あり） |
 | 公開URL | **https://kiyotake1229.github.io/hiraku-jima/**（GitHub Pages。App Store 申請のサポートURLにも使う）。紹介ページ: https://kiyotake1229.github.io/hiraku-jima/about.html |
 | 確認用URL | Claude Artifact https://claude.ai/artifact/RZmjEa8iBE5pzpjD7EisuK |
 | 本体 | `index.html`（約190KB、three.js r128 を CDN から読む。iOS版は同じファイルを同梱し three.js もローカル） |
@@ -79,11 +79,14 @@
   screenshots/      App Store 用スクリーンショット（6.7 / 6.5 / 5.5インチ × 5場面）。web/ は紹介ページ用の縮小版
   ios-app/          iOSアプリ（Capacitor）。岩崎さんへの引き渡し手順.md を参照
   .claude/          Claude 用の設定（ローカル確認サーバー・ドキュメント規則）
+  .github/workflows/ios-build.yml  iOS のビルド確認（GitHub Actions。push で動く。Xcode 26 に固定）
 ```
 
 ## iOS版
 
 `ios-app/` に Capacitor 7 のプロジェクトがある（Bundle ID `work.ltv.hiraku`）。three.js を同梱して完全オフライン、触覚フィードバックとローカル通知（翌朝9時の「今日のおねがい」）がネイティブで動く。ビルドと申請の手順は [ios-app/岩崎さんへの引き渡し手順.md](ios-app/岩崎さんへの引き渡し手順.md)。`node_modules/` は削除してあるので `npm install` から。
+
+App Store 用の申告として、プライバシーマニフェスト（`ios-app/ios/App/App/PrivacyInfo.xcprivacy`）と暗号化の申告（`ITSAppUsesNonExemptEncryption = NO`）を入れてある。push すると GitHub Actions（`.github/workflows/ios-build.yml`、Xcode 26 に固定）が署名なしでビルドし、これらがアプリに入っていることと、three.js が同梱されていることを確かめる（docs #0010）。
 
 ## 開発ドキュメント
 
@@ -96,6 +99,7 @@
 - 島の形・空中都市・大型建物・GitHub Pages: [docs/20261026_NEW_0007_ALL_島の形と空中都市と大型建物とGitHubPages.md](docs/20261026_NEW_0007_ALL_島の形と空中都市と大型建物とGitHubPages.md)
 - 橋・BGM・住民・週間ふりかえり・バッジ・紹介ページ・スクショ: [docs/20261106_NEW_0008_ALL_橋とBGMと住民と週間ふりかえりとバッジと紹介ページ.md](docs/20261106_NEW_0008_ALL_橋とBGMと住民と週間ふりかえりとバッジと紹介ページ.md)
 - 合体と図鑑・島コードの見学・航海・住民の会話・建物エディタ: [docs/20261106_NEW_0009_APP_合体と図鑑と見学と航海と住民と建物エディタ.md](docs/20261106_NEW_0009_APP_合体と図鑑と見学と航海と住民と建物エディタ.md)
+- プライバシーマニフェストと暗号化の申告・iOS のビルド確認: [docs/20261106_ENH_0010_IOS_プライバシーマニフェストと暗号化の申告.md](docs/20261106_ENH_0010_IOS_プライバシーマニフェストと暗号化の申告.md)
 - 変更したら1件ごとに文書を足し、`bash docs/manager/generate_docs_json.sh` を実行する
 
 ## ローカルで確認する
