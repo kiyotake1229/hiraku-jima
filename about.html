@@ -75,6 +75,12 @@ th,td{text-align:left;padding:12px 10px;border-bottom:1px solid rgba(255,255,255
 th{color:var(--sub);font-weight:600;width:34%}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .tag{background:rgba(142,203,255,.12);color:var(--blue);border:1px solid rgba(142,203,255,.3);padding:5px 11px;border-radius:999px;font-size:13px;font-weight:700}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.gal-note{color:var(--sub);font-size:14px;grid-column:1/-1}
+.gi{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px;transition:transform .2s,border-color .2s}
+.gi:hover{transform:translateY(-3px);border-color:rgba(255,200,87,.4)}
+.gi .t{font-weight:800;font-size:15px}.gi .m{font-size:12px;color:var(--sub)}.gi .c{font-size:13px;color:var(--sub);line-height:1.5;max-height:4.5em;overflow:hidden}
+.gi .btn{align-self:flex-start;padding:8px 14px;font-size:13px;margin-top:4px}
 footer{padding:40px 0 60px;color:var(--sub);font-size:13px;border-top:1px solid rgba(255,255,255,.08);text-align:center}
 footer a{color:var(--sub)}
 @media (max-width:760px){.hero{padding:56px 0 36px}.hero .wrap{grid-template-columns:1fr;gap:28px}.phone{width:min(240px,70vw)}.ft1{left:-8px}.ft2{right:-8px}.ft3{left:0}section{padding:48px 0}}
@@ -134,7 +140,16 @@ footer a{color:var(--sub)}
   </div>
 </section>
 
-<section>
+<section id="gallery">
+  <div class="wrap">
+    <h2>みんなの島</h2>
+    <p class="sec-sub">投稿された島を見学できます。自分の島は、ゲームの 設定 → 島コード → 「みんなの島ギャラリーに投稿」から。</p>
+    <div class="gal" id="galList"><div class="gal-note">読み込み中…</div></div>
+    <p style="margin-top:14px"><a class="btn g" href="https://github.com/kiyotake1229/hiraku-jima/issues/new?labels=island&title=%E3%82%8F%E3%81%9F%E3%81%97%E3%81%AE%E5%B3%B6&body=%E3%81%93%E3%81%AE%E4%B8%8B%E3%81%AE%E8%A1%8C%E3%81%AB%E5%B3%B6%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E8%B2%BC%E3%81%A3%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%E3%80%82%0A%0A" target="_blank" rel="noopener">島を投稿する（GitHub）</a></p>
+  </div>
+</section>
+
+<section style="background:var(--bg2)">
   <div class="wrap">
     <h2>ひらける世界</h2>
     <p class="sec-sub">建てたものは世界を切り替えても残る。同じ島を、違う空の下で眺められる。</p>
@@ -149,7 +164,7 @@ footer a{color:var(--sub)}
   </div>
 </section>
 
-<section style="background:var(--bg2)">
+<section>
   <div class="wrap">
     <h2>はじめかた</h2>
     <p class="sec-sub">アプリのインストールは不要。ホーム画面に追加すると全画面で遊べる。</p>
@@ -187,6 +202,21 @@ footer a{color:var(--sub)}
 </footer>
 
 <script>
+// みんなの島（GitHub Issues の island ラベルから読む。投稿内容は信用せず、島コードだけを取り出す）
+(async () => {
+  const el = document.getElementById('galList'); if (!el) return;
+  try {
+    const r = await fetch('https://api.github.com/repos/kiyotake1229/hiraku-jima/issues?labels=island&state=open&per_page=30&sort=created&direction=desc');
+    if (!r.ok) throw new Error(r.status);
+    const items = (await r.json()).filter(i => !i.pull_request);
+    const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const cards = items.map(i => { const m = (i.body || '').match(/HIRAKU1\.[A-Za-z0-9+\/=]{100,}/); if (!m) return '';
+      const note = (i.body || '').replace(/HIRAKU1\.[A-Za-z0-9+\/=]+/g, '').replace(/この下の行に島コード.*?\n/s, '').trim().slice(0, 120);
+      const d = new Date(i.created_at); const date = d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate();
+      return `<div class="gi"><div class="t">${esc(i.title).slice(0, 40)}</div><div class="m">${esc(i.user && i.user.login || '')} ・ ${date}</div>${note ? `<div class="c">${esc(note)}</div>` : ''}<a class="btn p" href="index.html#visit=${encodeURIComponent(m[0])}">見学する</a></div>`; }).filter(Boolean);
+    el.innerHTML = cards.length ? cards.join('') : '<div class="gal-note">まだ投稿がありません。最初の島を投稿してみませんか。</div>';
+  } catch (e) { el.innerHTML = '<div class="gal-note">いまは読み込めませんでした。時間をおいて開き直してください。</div>'; }
+})();
 // カードをスクロールで順に表示
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.15});
 document.querySelectorAll('.card').forEach((c,i) => { c.style.transitionDelay = (i%3)*0.08+'s'; io.observe(c); });

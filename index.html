@@ -180,7 +180,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 #edGrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;background:rgba(0,0,0,.3);padding:4px;border-radius:10px;touch-action:none;user-select:none;-webkit-user-select:none}
 .edc{aspect-ratio:1;border-radius:4px;position:relative}.edc.u::after{content:"";position:absolute;inset:35%;border-radius:50%;background:rgba(255,255,255,.18)}
 .edpal{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.sw3{width:30px;height:30px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0}.sw3.on{border-color:#fff;transform:scale(1.1)}.sw3.er{background:rgba(255,255,255,.1);color:#fff;display:flex;align-items:center;justify-content:center}.sw3.er svg{width:16px;height:16px}
-.edlist{display:flex;gap:8px;overflow-x:auto;padding:4px 0}.edi{flex:0 0 auto;background:rgba(255,255,255,.06);border:none;border-radius:10px;padding:6px;color:var(--text);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}.edi img{width:52px;height:52px;border-radius:8px}
+.edlist{display:flex;gap:8px;overflow-x:auto;padding:4px 0}.edi{flex:0 0 auto;background:rgba(255,255,255,.06);border-radius:10px;padding:6px;color:var(--text);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}.edi img{width:52px;height:52px;border-radius:8px;cursor:pointer}.edi .btn{padding:3px 8px;font-size:10px}
 .ppl{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.pp{background:rgba(255,255,255,.06);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--sub)}.pp b{color:var(--text);margin-right:4px}
 .review .stats{margin:6px 0 2px}
 .disc{display:flex;gap:12px;align-items:center;background:linear-gradient(135deg,rgba(255,200,87,.18),rgba(255,159,67,.08));border:1px solid rgba(255,200,87,.4);border-radius:14px;padding:12px}
@@ -424,6 +424,27 @@ const B = {
   domecity:{n:'ドーム群',     cat:'found', era:0, world:'sea', cost:{c:1500,s:250}, pop:36, d:'ドームハウスがつながって36人が住める'},
   monzen:  {n:'門前町',       cat:'found', era:0, world:'wa', cost:{c:1200,w:300}, pop:20, coins:6, d:'町家と茶屋の門前町。20人が住める、コイン+6/秒'},
   cloudvill:{n:'雲の村',      cat:'found', era:0, world:'sky', cost:{c:1800,s:200}, pop:28, happy:4, d:'雲の家が集まって村に。28人が住める、幸福+4'},
+  library: {n:'図書館',       cat:'found', era:0, cost:{c:900,w:200,s:100}, happy:12, coins:2, d:'静かな図書館。幸福+12、コイン+2/秒'},
+  onsen:   {n:'温泉',         cat:'found', era:0, cost:{c:400,s:60},   happy:14, coins:3, d:'池のそばに湧いた温泉。幸福+14、コイン+3/秒'},
+  orchard: {n:'果樹園',       cat:'found', era:0, cost:{c:200,w:40},   food:18, happy:3, d:'さくらのそばの畑が果樹園に。食料+18、幸福+3'},
+  nightmkt:{n:'夜市',         cat:'found', era:0, cost:{c:300,w:60},   coins:5, happy:5, d:'街灯の下の市場が夜市に。コイン+5/秒、幸福+5。夜に光る'},
+  festival:{n:'お祭り広場',   cat:'found', era:0, cost:{c:500,w:100}, happy:22, coins:4, d:'神社のまわりがお祭りに。幸福+22、コイン+4/秒'},
+  skyline: {n:'高層街',       cat:'found', era:0, cost:{c:3000,w:300,s:700}, pop:70, h:1.6, d:'マンションが並ぶ高層街。70人が住める'},
+  resort:  {n:'リゾート',     cat:'found', era:0, cost:{c:1200,w:150}, happy:20, coins:6, d:'海ぎわの公園がリゾートに。幸福+20、コイン+6/秒'},
+  brewery: {n:'酒蔵',         cat:'found', era:0, cost:{c:600,w:150}, coins:8, happy:3, d:'畑と池のそばの風車が酒蔵に。コイン+8/秒、幸福+3'},
+  windfarm:{n:'風車群',       cat:'found', era:0, cost:{c:700,w:200,s:60}, food:30, coins:4, d:'風車が3つ並んだ。食料+30、コイン+4/秒'},
+  mlake:   {n:'妖精の湖',     cat:'found', era:0, world:'magic', cost:{c:2500,s:300}, food:40, happy:10, d:'妖精の泉がクリスタルで湖に。食料+40、幸福+10'},
+  mgate:   {n:'魔法の門',     cat:'found', era:0, world:'magic', cost:{c:5000,s:800}, coins:40, happy:5, h:1.8, d:'魔法の塔が2本で門に。コイン+40/秒、幸福+5'},
+  wterrace:{n:'棚田',         cat:'found', era:0, world:'wa', cost:{c:3000,w:300}, food:60, d:'田んぼが4枚そろって棚田に。食料+60'},
+  wsando:  {n:'参道',         cat:'found', era:0, world:'wa', cost:{c:1000,w:150}, happy:22, d:'鳥居とさくらの参道。幸福+22。夜に灯籠が光る'},
+  fcity:   {n:'研究都市',     cat:'found', era:0, world:'future', cost:{c:6000,s:900}, coins:45, happy:8, h:1.2, d:'研究所が集まって研究都市に。コイン+45/秒、幸福+8'},
+  fmega:   {n:'メガタワー',   cat:'found', era:0, world:'future', cost:{c:8000,w:100,s:1000}, pop:100, h:2.0, d:'ネオンタワーが2本でメガタワーに。100人が住める。夜に光る'},
+  sforest: {n:'海藻の森',     cat:'found', era:0, world:'sea', cost:{c:2500,w:300}, food:60, d:'海藻農場が3つで森に。食料+60'},
+  sreef:   {n:'珊瑚礁',       cat:'found', era:0, world:'sea', cost:{c:5000,s:700}, happy:25, coins:8, d:'珊瑚園と真珠工房が珊瑚礁に。幸福+25、コイン+8/秒'},
+  kfw:     {n:'風の農園',     cat:'found', era:0, world:'sky', cost:{c:4000,w:200,s:500}, food:40, coins:20, h:1.5, d:'風の発電塔と雲の畑が合わさった。食料+40、コイン+20/秒'},
+  kcorridor:{n:'虹の回廊',    cat:'found', era:0, world:'sky', cost:{c:2000,s:250}, happy:25, d:'虹の橋がつながって回廊に。幸福+25'},
+  bigport: {n:'大きな港',     cat:'found', era:0, cost:{c:2000,w:400,s:200}, coins:14, happy:5, d:'港に市場と灯台がついて大きな港に。コイン+14/秒、幸福+5'},
+  campus:  {n:'学園都市',     cat:'found', era:0, cost:{c:4000,w:400,s:500}, coins:12, happy:18, h:1.3, d:'学校と図書館がそろって学園都市に。コイン+12/秒、幸福+18'},
   '__big': {n:'大型建物の一部', cat:'none', cost:{}},
   wpagoda: {n:'五重塔',       cat:'deco', era:4, world:'wa', cost:{c:4500,w:500,s:500},   happy:20, coins:5, h:1.9, d:'幸福+20、コイン+5/秒'},
 };
@@ -728,6 +749,27 @@ function makeBuilding(k, v, lv){
     case 'monzen': sub('wmachiya',0.65,-0.25,0.15); sub('wmachiya',0.65,0.25,0.15); sub('wtea',0.7,0,-0.28); bx(g,0.9,0.02,0.3,0xe8e4d8,0,0,0.42); break;
     case 'cloudvill': sub('kcloud',0.65,-0.26,0.2); sub('kcloud',0.65,0.26,0.2); sub('kcloud',0.75,0,-0.26); sub('krainbow',0.5,0,0.05,0.35); break;
     case 'port': { bx(g,0.5,0.06,0.9,0x9b6b3a,0.2,0,0); bx(g,0.3,0.26,0.3,wall,-0.25,0,-0.2); roof(g,0.34,0.14,0.34,0x5b7fb5,-0.25,0.26,-0.2); bx(g,0.04,0.6,0.04,0x6b7580,0.2,0,0.3); bx(g,0.4,0.03,0.03,0x6b7580,0.38,0.57,0.3); const bt=sph(g,0.14,0xff8a5c,0.35,0.02,-0.2); bt.scale.set(2,0.8,1); bx(g,0.04,0.22,0.04,0xdfe6ee,0.35,0.06,-0.2); anims.push({g,fn:(t)=>{ bt.position.y=0.02+Math.sin(t*2)*0.02; }}); break; }
+    case 'library': bx(g,0.8,0.42,0.6,0xe9e2d2,0,0,0); bx(g,0.84,0.04,0.64,0x5b7fb5,0,0.42,0); [-0.25,0,0.25].forEach(x=>bx(g,0.12,0.2,0.01,0,x,0.12,0.305,WIN)); [-0.3,-0.1,0.1,0.3].forEach(x=>bx(g,0.06,0.42,0.06,0xf7efe0,x,0,0.33)); break;
+    case 'onsen': bx(g,0.9,0.03,0.9,0xb9bec6,0,0,0); bx(g,0.5,0.12,0.5,0x8e98a4,0,0.03,0.1); bx(g,0.42,0.06,0.42,0x9fd6ff,0,0.12,0.1,glass(0x9fd6ff)); sub('bench',0.6,-0.32,-0.3,0.03); sub('lamp',0.6,0.33,-0.3,0.03); { const st=[]; for (let i=0;i<4;i++){ const q=sph(g,0.05,0xffffff,(i-1.5)*0.12,0.3,0.1); q.castShadow=false; q.material=mat(0xffffff,{transparent:true,opacity:0.5}); st.push(q);} anims.push({g,fn:(t)=>{ st.forEach((q,i)=>{ q.position.y=0.25+((t*0.3+i*0.25)%1)*0.4; }); }}); } break;
+    case 'orchard': bx(g,0.92,0.1,0.92,0x6b4e34,0,0,0); for (let r=0;r<3;r++) for (let c=0;c<3;c++){ cyl(g,0.03,0.18,0x7a4f2b,-0.3+c*0.3,0.1,-0.3+r*0.3); sph(g,0.11,0x5ab85a,-0.3+c*0.3,0.34,-0.3+r*0.3); sph(g,0.03,0xff6b6b,-0.26+c*0.3,0.36,-0.26+r*0.3); } break;
+    case 'nightmkt': sub('market',0.8,0,0.05); [-0.35,0.35].forEach(x=>sub('lamp',0.7,x,0.3)); bx(g,0.9,0.02,0.02,0xff9f43,0,0.5,0.3,GLOW); for (let i=0;i<6;i++) sph(g,0.03,[0xff6fa8,0xffe14d,0x5ad1a6][i%3],-0.35+i*0.14,0.46,0.3,gmat([0xff6fa8,0xffe14d,0x5ad1a6][i%3])); break;
+    case 'festival': sub('shrine',0.7,0,-0.15); [-0.38,0.38].forEach(x=>sub('lamp',0.6,x,0.3)); bx(g,0.9,0.015,0.015,0xe25555,0,0.45,0.3); for (let i=0;i<7;i++) bx(g,0.06,0.08,0.01,[0xe25555,0xffffff][i%2],-0.36+i*0.12,0.37,0.3); break;
+    case 'skyline': sub('mansion',0.75,-0.25,0.15); sub('mansion',0.75,0.25,-0.15); bx(g,0.3,1.1,0.3,0xcfd8e3,0.25,0,0.25); for (let r=0;r<5;r++) [-0.08,0.08].forEach(x=>bx(g,0.08,0.1,0.01,0,0.25+x,0.1+r*0.2,0.405,WIN)); break;
+    case 'resort': sub('park',0.85,-0.1,-0.1); bx(g,0.4,0.03,0.3,0xe9d8a6,0.25,0,0.3); sub('bench',0.5,0.3,0.3,0.03); cyl(g,0.02,0.4,0xdfe6ee,-0.35,0,0.35); cone(g,0.16,0.06,0xff6fa8,-0.35,0.4,0.35); break;
+    case 'brewery': sub('windmill',0.8,-0.2,0.1); bx(g,0.34,0.3,0.34,0x4a3a2a,0.28,0,-0.25); roof(g,0.4,0.16,0.4,0x222,0.28,0.3,-0.25); cyl(g,0.1,0.2,0x9b6b3a,0.3,0,0.3); break;
+    case 'windfarm': sub('windmill',0.7,-0.3,0.2); sub('windmill',0.7,0.3,0.2); sub('windmill',0.8,0,-0.25); break;
+    case 'bigport': sub('port',0.85,0,0.05); sub('light',0.5,-0.35,-0.35); bx(g,0.3,0.2,0.2,0xe25555,0.3,0,-0.35); bx(g,0.3,0.02,0.2,0x9aa3ad,0.3,0.2,-0.35); break;
+    case 'campus': sub('school',0.7,-0.22,0.15); sub('library',0.7,0.22,-0.15); bx(g,0.1,0.7,0.1,0xf7efe0,0.32,0,0.32); sph(g,0.06,0xffe14d,0.32,0.74,0.32,GLOW); break;
+    case 'mlake': bx(g,0.92,0.05,0.92,0x8f7fff,0,0,0,glass(0x8f7fff)); sub('mfairy',0.75,0,0); [[-0.36,-0.36],[0.36,0.36],[0.36,-0.36]].forEach(([x,z])=>sub('mcrystal',0.5,x,z)); break;
+    case 'mgate': sub('mtower',0.8,-0.28,0); sub('mtower',0.8,0.28,0); { const a=new THREE.Mesh(G.tor, gmat(0xb48bff)); a.scale.set(0.7,0.7,0.7); a.position.y=0.9; g.add(a); anims.push({g,fn:(t)=>{ a.rotation.y=t*0.6; }}); } break;
+    case 'wterrace': for (let i=0;i<3;i++){ bx(g,0.92-i*0.25,0.08,0.92-i*0.25,0x5c8f4a,0,i*0.08,0); bx(g,0.84-i*0.25,0.02,0.84-i*0.25,0x4fb8ea,0,i*0.08+0.08,0,glass(0x4fb8ea)); } for (let r=0;r<3;r++) for (let c=0;c<3;c++){ const q=sph(g,0.04,0x8fd07a,-0.28+c*0.28,0.3,-0.28+r*0.28); q.scale.y=1.6; } break;
+    case 'wsando': sub('wtorii',0.7,0,0.3); sub('wtorii',0.6,0,-0.1); sub('sakura',0.6,-0.33,-0.33); sub('sakura',0.6,0.33,-0.33); bx(g,0.3,0.02,0.92,0xe8e4d8,0,0,0); break;
+    case 'fcity': sub('flab',0.7,-0.22,0.18); sub('flab',0.7,0.22,-0.18); sub('ftree',0.6,0.3,0.3); bx(g,0.9,0.02,0.9,0x8e9bb0,0,0,0); bx(g,0.9,0.01,0.03,0x35e3ff,0,0.02,0,gmat(0x35e3ff)); break;
+    case 'fmega': sub('fhome',0.8,-0.22,0); sub('fhome',0.8,0.22,0); bx(g,0.5,0.06,0.2,0x8e9bb0,0,1.2,0); bx(g,0.46,0.02,0.05,0x35e3ff,0,1.26,0.1,gmat(0x35e3ff)); break;
+    case 'sforest': sub('skelp',0.8,0,0); sub('skelp',0.6,-0.32,0.3); sub('skelp',0.6,0.32,-0.3); sub('skelp',0.6,0.32,0.3); break;
+    case 'sreef': sub('scoral',0.7,-0.28,0.22); sub('scoral',0.7,0.28,0.22); sub('scoral',0.8,0,-0.25); sub('spearl',0.5,0.33,-0.33); bx(g,0.92,0.03,0.92,0xffd3a6,0,0,0); break;
+    case 'kfw': sub('kwind',0.75,-0.28,-0.1); sub('kwind',0.75,0.28,-0.1); sub('kfarm',0.7,0,0.3); break;
+    case 'kcorridor': sub('krainbow',0.7,-0.25,0); sub('krainbow',0.7,0.25,0); sub('kcloud',0.5,0,0.35); break;
     case 'bridge': { bx(g,1.04,0.07,0.5,0x9b6b3a,0,0,0); [-0.23,0.23].forEach(z=>{ bx(g,1.04,0.03,0.03,0xc49a6c,0,0.2,z); [-0.45,0,0.45].forEach(x=>bx(g,0.04,0.2,0.04,0x7a4f2b,x,0.07,z)); }); [[-0.38,-0.17],[0.38,0.17],[-0.38,0.17],[0.38,-0.17]].forEach(([x,z])=>bx(g,0.08,0.3,0.08,0x5a3a1a,x,-0.3,z)); break; }
     case 'sakura': { cyl(g,0.06,0.35,0x6b4321,0,0,0); sph(g,0.3,0xffb7d5,0,0.55,0); sph(g,0.22,0xffc9e0,0.18,0.46,0.1); sph(g,0.2,0xff9fc7,-0.17,0.48,-0.1); const pt=[]; for (let i=0;i<6;i++){ const q=sph(g,0.03,0xffd4e6,0,0.4,0); q.castShadow=false; pt.push(q);} anims.push({g,fn:(t)=>{ pt.forEach((q,i)=>{ const u=((t*0.22+i/6)%1); q.position.set(0.35*Math.sin(u*6+i), 0.75-u*0.72, 0.35*Math.cos(u*5+i)); }); }}); break; }
     case 'light': cyl(g,0.22,0.12,0x9aa3ad,0,0,0); for (let i=0;i<4;i++) cyl(g,0.14-i*0.012,0.24,i%2?0xe25555:0xffffff,0,0.12+i*0.24,0); cyl(g,0.12,0.16,0x3a4450,0,1.08,0); sph(g,0.1,0xfff2b0,0,1.3,0,GLOW); cone(g,0.15,0.12,0xe25555,0,1.38,0); break;
@@ -1122,9 +1164,12 @@ function showEditor(id){ if (visiting) return toast('見学中は作れません
     <div class="row"><button class="btn" id="edCopy">下の層をコピー</button><button class="btn" id="edClear">この層を消す</button><button class="btn" id="edAll">全部消す</button></div>
     <p id="edInfo" style="margin:6px 0"></p>
     <div class="row"><button class="btn p" id="edSave">${cb?'保存する':'作る'}</button><button class="btn" id="bOk">やめる</button></div>
-    ${(S.custom.length)?`<div class="sub">作った建物（タップで編集。置いたものも新しい形になる）</div><div class="edlist">${S.custom.map(c=>`<button class="edi" data-edit="${c.id}"><img src="${THUMB['c'+c.id]||''}"><span>${c.n}</span></button>`).join('')}</div>`:''}`;
+    ${(S.custom.length)?`<div class="sub">作った建物（タップで編集。置いたものも新しい形になる）</div><div class="edlist">${S.custom.map(c=>`<div class="edi"><img src="${THUMB['c'+c.id]||''}" data-edit="${c.id}"><span>${c.n}</span><button class="btn" data-code="${c.id}">コード</button></div>`).join('')}</div>`:''}
+    <div class="row"><button class="btn" id="edImport">${I.drag}建物コードから作る</button></div>`;
   overlay(html); $('bOk').onclick=()=>{ edClose(); closeOv(); };
   $('ovCard').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{ edClose(); showEditor(b.dataset.edit); });
+  $('ovCard').querySelectorAll('[data-code]').forEach(b=>b.onclick=()=>{ const cb=S.custom.find(c=>c.id===b.dataset.code); edClose(); showBuildingCode(cb); });
+  $('edImport').onclick=()=>{ edClose(); showBuildingImport(); };
   $('edCat').querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{ ED.cat=b.dataset.cat; $('edCat').querySelectorAll('.tab').forEach(x=>x.classList.toggle('on', x===b)); edInfo(); });
   $('edLayer').querySelectorAll('[data-y]').forEach(b=>b.onclick=()=>{ ED.y=+b.dataset.y; $('edLayer').querySelectorAll('.tab').forEach(x=>x.classList.toggle('on', x===b)); edGrid(); });
   $('edPal').querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{ ED.col=b.dataset.col; $('edPal').querySelectorAll('.sw3').forEach(x=>x.classList.toggle('on', x===b)); });
@@ -1147,6 +1192,17 @@ function edStart(){ try{ ED.r=new THREE.WebGLRenderer({canvas:$('edCv'), antiali
   const loop=()=>{ if (!ED || !ED.r) return; ED.g.rotation.y+=0.01; ED.r.render(ED.sc, ED.cam); requestAnimationFrame(loop); }; loop(); }catch(e){} }
 function edPreview(){ if (!ED || !ED.vg) return; ED.vg.clear(); voxMesh(ED.vg, ED.vox); edInfo(); }
 function edClose(){ if (ED && ED.r){ ED.r.dispose(); ED.r.forceContextLoss(); } ED=null; }
+function buildingCode(cb){ return 'HIRAKUB1.'+btoa(unescape(encodeURIComponent(JSON.stringify({n:cb.n, cat:cb.cat, vox:cb.vox})))); }
+function parseBuildingCode(v){ v=(v||'').trim(); if (!v.startsWith('HIRAKUB1.')) return null; try{ const d=JSON.parse(decodeURIComponent(escape(atob(v.slice(9))))); if (!d.n || !['home','deco','prod'].includes(d.cat) || typeof d.vox!=='string' || d.vox.length!==VX*VX*VY || /[^0-9a-c]/.test(d.vox)) return null; return {n:String(d.n).slice(0,10), cat:d.cat, vox:d.vox}; }catch(e){ return null; } }
+function showBuildingCode(cb){ const code=buildingCode(cb);
+  overlay(`<h2>${I.build}建物コード</h2><p>「${cb.n}」のコード。人に渡すと、相手の島でも同じ建物が作れます。</p><textarea id="taB" readonly>${code}</textarea><div class="row"><button class="btn p" id="bCopyB">コピー</button><button class="btn" id="bShareB">共有</button><button class="btn" id="bOk">もどる</button></div>`);
+  $('taB').onclick=()=>$('taB').select(); $('bOk').onclick=()=>showEditor(null);
+  $('bCopyB').onclick=async()=>{ try{ await navigator.clipboard.writeText(code); toast('コピーしました'); }catch(e){ $('taB').select(); toast('長押しでコピーしてね'); } };
+  $('bShareB').onclick=async()=>{ try{ if (navigator.share) await navigator.share({title:'ひらく島の建物「'+cb.n+'」', text:code}); else toast('この端末では共有できません'); }catch(e){} }; }
+function showBuildingImport(){ overlay(`<h2>${I.build}建物コードから作る</h2><p>もらった建物コード（HIRAKUB1.…）を貼り付けると、じぶんの建物として追加されます。</p><textarea id="taBi" placeholder="HIRAKUB1.…"></textarea><div class="row"><button class="btn p" id="bGoB">追加する</button><button class="btn" id="bOk">もどる</button></div>`);
+  $('bOk').onclick=()=>showEditor(null);
+  $('bGoB').onclick=()=>{ const d=parseBuildingCode($('taBi').value); if (!d) return toast('読み込めませんでした。文字列を確認してね'); S.custom=S.custom||[]; if (S.custom.length>=12) return toast('作れるのは12個まで');
+    const cb={id:Math.random().toString(36).slice(2,8), n:d.n, cat:d.cat, vox:d.vox}; S.custom.push(cb); registerCustom(cb); thumbOne('c'+cb.id); count('custom'); renderItems(); save(); sfx('fanfare'); toast(`「${cb.n}」を追加しました`); showEditor(null); }; }
 function edSaveBuilding(){ const n=$('edName').value.trim().slice(0,10); const cnt=[...ED.vox].filter(c=>c!=='0').length; if (!cnt) return toast('ブロックを置いてね'); if (!n) return toast('名前をつけてね');
   if (!ED.id && S.custom.length>=12) return toast('作れるのは12個まで。既存のものを編集してね');
   let cb; if (ED.id){ cb=S.custom.find(c=>c.id===ED.id); cb.n=n; cb.cat=ED.cat; cb.vox=ED.vox; } else { cb={id:Math.random().toString(36).slice(2,8), n, cat:ED.cat, vox:ED.vox}; S.custom.push(cb); count('custom'); }
@@ -1245,6 +1301,7 @@ const GOALS = [
   {id:'isle2',  n:'新しい島を見つける',   v:()=>(S.islands?S.islands.length:1)-1, need:1, r:{c:2000,st:2}},
   {id:'isle4',  n:'島を4つにする',        v:()=>(S.islands?S.islands.length:1), need:4, r:{c:10000,st:4}},
   {id:'fusion10',n:'合体を10種類見つける', v:()=>S.found.length, need:10, r:{c:5000,st:4}},
+  {id:'fusion25',n:'合体を25種類見つける', v:()=>S.found.length, need:25, r:{c:20000,st:8}},
   {id:'star1',  n:'星の建物を建てる',    v:()=>cntB(t=>B[t.b].cost.st), need:1, r:{c:1500,st:1}},
   {id:'event1', n:'季節のイベント建物を建てる', v:()=>cntB(t=>B[t.b].season!=null), need:1, r:{c:500,st:1}},
   {id:'world1', n:'新しい世界をひらく',  v:()=>S.worlds.length-1, need:1, r:{c:2000,st:2}},
@@ -1293,6 +1350,27 @@ const FUSIONS = [
   {id:'domecity',  base:'sdome',    need:{sdome:2},              res:'domecity',  hint:'海底都市: ドームハウスを3つつなげると…'},
   {id:'monzen',    base:'wmachiya', need:{wmachiya:2, wtea:1},   res:'monzen',    hint:'城下町: 町家と茶屋を集めると…'},
   {id:'cloudvill', base:'kcloud',   need:{kcloud:2, krainbow:1}, res:'cloudvill', hint:'空中都市: 雲の家と虹の橋をまとめると…'},
+  {id:'orchard',   base:'farm',     need:{sakura:1, farm:1},     res:'orchard',   hint:'畑のとなりにさくらを植えると…'},
+  {id:'onsen',     base:'bench',    need:{pond:2, lamp:1},       res:'onsen',     hint:'池のそばにベンチと街灯を置くと…'},
+  {id:'nightmkt',  base:'market',   need:{lamp:2, bench:1},      res:'nightmkt',  hint:'市場を街灯で照らしてベンチを置くと…'},
+  {id:'library',   base:'school',   need:{bench:2, flower:1},    res:'library',   hint:'学校のまわりにベンチと花壇があると…'},
+  {id:'festival',  base:'shrine',   need:{lamp:2, flowerp:2},    res:'festival',  hint:'神社のまわりに街灯と花の塗りがあると…'},
+  {id:'skyline',   base:'mansion',  need:{mansion:2, road:2},    res:'skyline',   hint:'マンションを道ぞいに3つ並べると…'},
+  {id:'resort',    base:'park',     need:{sea:3, bench:1},       res:'resort',    hint:'海ぎわの公園にベンチを置くと…'},
+  {id:'brewery',   base:'windmill', need:{farm:2, pond:1},       res:'brewery',   hint:'畑と池のそばの風車は…'},
+  {id:'windfarm',  base:'windmill', need:{windmill:2},           res:'windfarm',  hint:'風車を3つ並べると…'},
+  {id:'bigport',   base:'port',     need:{market:1, light:1},    res:'bigport',   hint:'港のとなりに市場と灯台があると…'},
+  {id:'campus',    base:'school',   need:{library:1, park:1},    res:'campus',    hint:'図書館を見つけたあと、学校のとなりに置くと…'},
+  {id:'mlake',     base:'mfairy',   need:{mcrystal:2},           res:'mlake',     hint:'魔法の国: 妖精の泉をクリスタルで囲むと…'},
+  {id:'mgate',     base:'mtower',   need:{mtower:1},             res:'mgate',     hint:'魔法の国: 魔法の塔を2本並べると…'},
+  {id:'wterrace',  base:'wrice',    need:{wrice:3},              res:'wterrace',  hint:'城下町: 田んぼを4枚まとめると…'},
+  {id:'wsando',    base:'wtorii',   need:{wtorii:1, sakura:1},   res:'wsando',    hint:'城下町: 鳥居を2つとさくらを並べると…'},
+  {id:'fcity',     base:'flab',     need:{flab:1, ftree:1},      res:'fcity',     hint:'未来都市: 研究所を2つとホロツリーを集めると…'},
+  {id:'fmega',     base:'fhome',    need:{fhome:1},              res:'fmega',     hint:'未来都市: ネオンタワーを2本並べると…'},
+  {id:'sforest',   base:'skelp',    need:{skelp:2},              res:'sforest',   hint:'海底都市: 海藻農場を3つつなげると…'},
+  {id:'sreef',     base:'scoral',   need:{scoral:2, spearl:1},   res:'sreef',     hint:'海底都市: 珊瑚園を3つと真珠工房を集めると…'},
+  {id:'kfw',       base:'kwind',    need:{kwind:1, kfarm:1},     res:'kfw',       hint:'空中都市: 風の発電塔を2本と雲の畑を集めると…'},
+  {id:'kcorridor', base:'krainbow', need:{krainbow:1, kcloud:1}, res:'kcorridor', hint:'空中都市: 虹の橋を2つと雲の家を並べると…'},
 ];
 const NEED_N = {sea:'海', pond:'池', road:'道', flowerp:'花の塗り'};
 function needText(need){ return Object.keys(need).map(k=>`${B[k]?B[k].n:NEED_N[k]}×${need[k]}`).join('・'); }
@@ -1607,7 +1685,11 @@ function showSettings(){
     overlay(`<h2>${I.quest}島コード</h2><p>この文字列が島のすべて。保存しておけば機種変更後に「読み込む」で戻せるし、人に渡せば<b>見学</b>してもらえます。</p><textarea id="taOut" readonly>${code}</textarea>
       <div class="row"><button class="btn p" id="bCopy">コードをコピー</button><button class="btn" id="bShareD">共有</button></div>
       <div class="row"><button class="btn" id="bLink">見学リンクをコピー</button><button class="btn" id="bShareL">リンクを共有</button><button class="btn" id="bOk">閉じる</button></div>
-      <p style="font-size:11px">見学リンクは長い文字列です。LINE や X ではコードを貼るより、リンクのほうが開きやすいことがあります。</p>`);
+      <div class="row"><button class="btn" id="bGallery">${I.globe}みんなの島ギャラリーに投稿</button></div>
+      <p style="font-size:11px">見学リンクは長い文字列です。LINE や X ではコードを貼るより、リンクのほうが開きやすいことがあります。ギャラリーは GitHub の Issue に島コードを貼ると、紹介ページに並びます（GitHub のアカウントが必要）。</p>`);
+    $('bGallery').onclick=async()=>{ try{ await navigator.clipboard.writeText(code); }catch(e){}
+      const title=encodeURIComponent(`${S.name||'なまえのない'}島（${ERAS[S.era].n}・人口${totalPop()}）`); const body=encodeURIComponent('この下の行に島コード（コピー済み。長押しで貼り付け）を貼ってください。ひとことも書けます。\n\n');
+      const u=`https://github.com/kiyotake1229/hiraku-jima/issues/new?labels=island&title=${title}&body=${body}`; toast('島コードをコピーしました。開いたページに貼り付けて投稿してね'); try{ const w=window.open(u,'_blank','noopener'); if (!w) location.href=u; }catch(e){ location.href=u; } };
     $('bOk').onclick=showSettings; $('taOut').onclick=()=>$('taOut').select();
     const cp=async(t,m)=>{ try{ await navigator.clipboard.writeText(t); toast(m); }catch(e){ $('taOut').value=t; $('taOut').select(); toast('長押しでコピーしてね'); } };
     $('bCopy').onclick=()=>cp(code,'コードをコピーしました'); $('bLink').onclick=()=>cp(link,'見学リンクをコピーしました');
@@ -1649,7 +1731,8 @@ function showHelp(){
     <li>駅・モール・スタジアムは<b>2×2マス</b>の大型建物。「回転」で建物の向きを変えられる</li>
     <li>集落になると海に<b>橋</b>をかけられる（開拓タブ）。橋をつなげて隣の島を開拓しよう。月曜には<b>先週のふりかえり</b>、達成した目標は<b>バッジ</b>に</li>
     <li>村になったら海ぎわに<b>港</b>を建て、右の船ボタンから<b>新しい島</b>を探せる（星とコイン）。島は何度でも増やせて、森の島・岩の島・雪の島などがある</li>
-    <li>住まい・仕事・飾りタブの「<b>じぶんの建物</b>」で、ブロックを積んで自分だけの建物を作れる（8×8×6）。作った建物は島コードにも入るので、見学した人にも見える</li>
+    <li>住まい・仕事・飾りタブの「<b>じぶんの建物</b>」で、ブロックを積んで自分だけの建物を作れる（8×8×6）。作った建物は島コードにも入るので、見学した人にも見える。<b>建物コード</b>で建物だけを人に渡せる</li>
+    <li>島コードの画面から<b>みんなの島ギャラリー</b>に投稿できる。紹介ページ（about.html）に並び、だれでも見学できる</li>
     <li>歩いている<b>住民</b>をタップすると話せる。名前と性格があって、島の様子で話が変わる</li>
     <li>建物のまわりに決まった組み合わせがそろうと<b>合体</b>して新しいものになる（家3軒＋公園→団地 など）。見つけたものは<b>図鑑</b>に。設定の<b>島コード</b>で島を保存・共有でき、人の島を<b>見学</b>できる</li>
     <li>1本指でドラッグ: 移動 / 2本指: ズーム / 右の回転ボタン: 視点回転</li></ul>
