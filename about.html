@@ -113,6 +113,9 @@ footer a{color:var(--sub)}
       <div class="card"><div class="ic" style="color:#8ecbff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div><h3>5つのファンタジー世界</h3><p>星を集めて、魔法の国・和風の城下町・未来都市・海底都市・空中都市をひらく。空の色も住民の姿もBGMも、世界ごとに変わる。</p></div>
       <div class="card"><div class="ic" style="color:#b79be6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16c3-7 13-7 16 0M8 20V8l-3 3M16 20V8l3 3"/></svg></div><h3>季節が変わる</h3><p>実際の日付で春夏秋冬。桜の花びら、夏のホタル、落ち葉、雪。季節限定の建物とおねがいがある。</p></div>
       <div class="card"><div class="ic" style="color:#ff8a5c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div><h3>写真を撮って共有</h3><p>街の名前・人口・称号の帯つきで島の写真を保存・共有。2×2マスの大型建物や橋で、見栄えのする街が作れる。</p></div>
+      <div class="card"><div class="ic" style="color:#ffe14d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></div><h3>合体で見つける</h3><p>建物のまわりに決まった組み合わせがそろうと、新しい建物に変わる。家3軒と公園で団地、海ぎわの灯台は漁港に。24種の発見が図鑑に埋まっていく。</p></div>
+      <div class="card"><div class="ic" style="color:#5ad1a6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l2 3h14l2-3M4 17l1-5h14l1 5M12 4v8M12 4l5 6H7z"/></svg></div><h3>島は増える</h3><p>港から船を出して新しい島を探す。森の島、岩の島、雪の島、砂の島。何個でも増やせて、コインも材料も島のあいだで共通。</p></div>
+      <div class="card"><div class="ic" style="color:#8ecbff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-6 7 6v11M10 21v-6h4v6"/></svg></div><h3>自分で作る、人に見せる</h3><p>8×8×6のブロックで自分だけの建物をデザイン。住民には名前と性格があって話しかけられる。島コードを渡せば、友だちがあなたの島を見学できる。</p></div>
     </div>
   </div>
 </section>
@@ -167,7 +170,7 @@ footer a{color:var(--sub)}
       <tr><th>本体</th><td>HTML 1ファイル（約165KB）。CSS・JS・SVGアイコンをすべて同梱。外部依存は three.js のみ</td></tr>
       <tr><th>3D描画</th><td>three.js（WebGL）。地面・水・木・岩・花は InstancedMesh、建物50種以上はプリミティブの組み合わせで生成。影・昼夜・霧・粒子</td></tr>
       <tr><th>音</th><td>効果音とBGMは WebAudio でその場で生成。音源ファイルなし。BGMは世界ごとに音階・テンポ・音色が変わる</td></tr>
-      <tr><th>データ</th><td>localStorage に端末内保存。サーバー通信なし。文字列で書き出し・読み込みして機種変更に対応</td></tr>
+      <tr><th>データ</th><td>localStorage に端末内保存。サーバー通信なし。島コード（文字列）で書き出し・読み込み・見学。複数の島は今いる島だけ展開し、ほかはパックして保持</td></tr>
       <tr><th>PWA</th><td>manifest + Service Worker でホーム画面追加・オフライン起動</td></tr>
       <tr><th>iOS アプリ</th><td>Capacitor でラップ。触覚フィードバックとローカル通知をネイティブで実装</td></tr>
       <tr><th>公開</th><td>GitHub Pages。<a href="https://github.com/kiyotake1229/hiraku-jima" target="_blank" rel="noopener">ソースコード</a>はすべて公開</td></tr>
