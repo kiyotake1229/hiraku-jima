@@ -1,8 +1,18 @@
 {
-  "next_no": 11,
-  "total": 10,
-  "generated_at": "2026-11-06T13:53:52.070338",
+  "next_no": 12,
+  "total": 11,
+  "generated_at": "2026-11-06T15:08:11.337509",
   "documents": [
+    {
+      "no": 11,
+      "date": "2026-11-06",
+      "type": "BUG",
+      "category": "IOS",
+      "title": "共有シートで画像を保存すると落ちる不具合",
+      "filename": "20261106_BUG_0011_IOS_共有シートで画像を保存すると落ちる不具合.md",
+      "extension": "md",
+      "summary": "iOS 版で島の写真を共有するとき、共有シートで「画像を保存」を選ぶとアプリが落ちる作りになっていた。写真に保存するときの説明文（`NSPhotoLibraryAddUsageDescription`）が `Info.plist` に無かったため。説明文を足し、ビルド確認で毎回確かめるようにした。あわせて、引き渡し手順の「必要な環境」を Xcode 26（Xcode 27 は使わない）・Node."
+    },
     {
       "no": 10,
       "date": "2026-11-06",
