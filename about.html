@@ -81,6 +81,9 @@ th{color:var(--sub);font-weight:600;width:34%}
 .gi:hover{transform:translateY(-3px);border-color:rgba(255,200,87,.4)}
 .gi .t{font-weight:800;font-size:15px}.gi .m{font-size:12px;color:var(--sub)}.gi .c{font-size:13px;color:var(--sub);line-height:1.5;max-height:4.5em;overflow:hidden}
 .gi .btn{align-self:flex-start;padding:8px 14px;font-size:13px;margin-top:4px}
+.gi .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}.gi .foot .btn{margin-top:0}
+.like{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:999px;background:rgba(255,111,168,.12);border:1px solid rgba(255,111,168,.35);color:var(--pink);font-weight:800;font-size:13px;text-decoration:none;transition:transform .15s,background .15s}.like:hover{transform:scale(1.06);background:rgba(255,111,168,.22)}.like svg{width:14px;height:14px;fill:currentColor}
+.gal-sort{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap}.gal-sort button{background:rgba(255,255,255,.06);color:var(--sub);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s,color .15s}.gal-sort button.on{background:var(--accent);color:#2a1d06;border-color:transparent}.gal-sort .n{margin-left:auto;color:var(--sub);font-size:13px;align-self:center}
 footer{padding:40px 0 60px;color:var(--sub);font-size:13px;border-top:1px solid rgba(255,255,255,.08);text-align:center}
 footer a{color:var(--sub)}
 @media (max-width:760px){.hero{padding:56px 0 36px}.hero .wrap{grid-template-columns:1fr;gap:28px}.phone{width:min(240px,70vw)}.ft1{left:-8px}.ft2{right:-8px}.ft3{left:0}section{padding:48px 0}}
@@ -119,9 +122,9 @@ footer a{color:var(--sub)}
       <div class="card"><div class="ic" style="color:#8ecbff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></div><h3>5つのファンタジー世界</h3><p>星を集めて、魔法の国・和風の城下町・未来都市・海底都市・空中都市をひらく。空の色も住民の姿もBGMも、世界ごとに変わる。</p></div>
       <div class="card"><div class="ic" style="color:#b79be6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16c3-7 13-7 16 0M8 20V8l-3 3M16 20V8l3 3"/></svg></div><h3>季節が変わる</h3><p>実際の日付で春夏秋冬。桜の花びら、夏のホタル、落ち葉、雪。季節限定の建物とおねがいがある。</p></div>
       <div class="card"><div class="ic" style="color:#ff8a5c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div><h3>写真を撮って共有</h3><p>街の名前・人口・称号の帯つきで島の写真を保存・共有。2×2マスの大型建物や橋で、見栄えのする街が作れる。</p></div>
-      <div class="card"><div class="ic" style="color:#ffe14d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></div><h3>合体で見つける</h3><p>建物のまわりに決まった組み合わせがそろうと、新しい建物に変わる。家3軒と公園で団地、海ぎわの灯台は漁港に。24種の発見が図鑑に埋まっていく。</p></div>
+      <div class="card"><div class="ic" style="color:#ffe14d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></div><h3>合体で見つける</h3><p>建物のまわりに決まった組み合わせがそろうと、新しい建物に変わる。家3軒と公園で団地、海ぎわの灯台は漁港に。島ごとの名物もあって、55種の発見が図鑑に埋まっていく。</p></div>
       <div class="card"><div class="ic" style="color:#5ad1a6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l2 3h14l2-3M4 17l1-5h14l1 5M12 4v8M12 4l5 6H7z"/></svg></div><h3>島は増える</h3><p>港から船を出して新しい島を探す。森の島、岩の島、雪の島、砂の島。何個でも増やせて、コインも材料も島のあいだで共通。</p></div>
-      <div class="card"><div class="ic" style="color:#8ecbff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-6 7 6v11M10 21v-6h4v6"/></svg></div><h3>自分で作る、人に見せる</h3><p>8×8×6のブロックで自分だけの建物をデザイン。住民には名前と性格があって話しかけられる。島コードを渡せば、友だちがあなたの島を見学できる。</p></div>
+      <div class="card"><div class="ic" style="color:#8ecbff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-6 7 6v11M10 21v-6h4v6"/></svg></div><h3>自分で作る、人に見せる</h3><p>8×8×6のブロックで自分だけの建物をデザイン。住民には名前と性格があって話しかけられるし、住民どうしもおしゃべりする。島コードを渡せば、友だちがあなたの島を見学できる。</p></div>
     </div>
   </div>
 </section>
@@ -143,7 +146,8 @@ footer a{color:var(--sub)}
 <section id="gallery">
   <div class="wrap">
     <h2>みんなの島</h2>
-    <p class="sec-sub">投稿された島を見学できます。自分の島は、ゲームの 設定 → 島コード → 「みんなの島ギャラリーに投稿」から。</p>
+    <p class="sec-sub">投稿された島を見学できます。自分の島は、ゲームの 設定 → 島コード → 「みんなの島ギャラリーに投稿」から。気に入った島には、カードのハートから「いいね」を送れます（GitHub のリアクション。アカウントが要ります）。</p>
+    <div class="gal-sort" id="galSort"><button class="on" data-sort="new">新しい順</button><button data-sort="like">いいね順</button><span class="n" id="galCount"></span></div>
     <div class="gal" id="galList"><div class="gal-note">読み込み中…</div></div>
     <p style="margin-top:14px"><a class="btn g" href="https://github.com/kiyotake1229/hiraku-jima/issues/new?labels=island&title=%E3%82%8F%E3%81%9F%E3%81%97%E3%81%AE%E5%B3%B6&body=%E3%81%93%E3%81%AE%E4%B8%8B%E3%81%AE%E8%A1%8C%E3%81%AB%E5%B3%B6%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E8%B2%BC%E3%81%A3%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84%E3%80%82%0A%0A" target="_blank" rel="noopener">島を投稿する（GitHub）</a></p>
   </div>
@@ -203,18 +207,29 @@ footer a{color:var(--sub)}
 
 <script>
 // みんなの島（GitHub Issues の island ラベルから読む。投稿内容は信用せず、島コードだけを取り出す）
+// いいね = その Issue についた GitHub のリアクション（ハート・いいね・やったー）の合計
 (async () => {
   const el = document.getElementById('galList'); if (!el) return;
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.9 4.5 6.6 4.5c2 0 3.5 1.1 4.4 2.5 1-1.4 2.5-2.5 4.4-2.5 3.7 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+  let posts = [], sort = 'new';
+  const likesOf = i => { const r = i.reactions || {}; return (r.heart || 0) + (r['+1'] || 0) + (r.hooray || 0); };
+  const render = () => {
+    const list = posts.slice().sort((a, b) => sort === 'like' ? (b.likes - a.likes) || (b.ts - a.ts) : b.ts - a.ts);
+    el.innerHTML = list.length ? list.map(p => `<div class="gi"><div class="t">${esc(p.title)}</div><div class="m">${esc(p.user)} ・ ${p.date}</div>${p.note ? `<div class="c">${esc(p.note)}</div>` : ''}<div class="foot"><a class="btn p" href="index.html#visit=${encodeURIComponent(p.code)}">見学する</a><a class="like" href="${esc(p.url)}" target="_blank" rel="noopener" title="GitHub でいいねする">${HEART}${p.likes}</a></div></div>`).join('')
+      : '<div class="gal-note">まだ投稿がありません。最初の島を投稿してみませんか。</div>';
+    const c = document.getElementById('galCount'); if (c) c.textContent = list.length ? `${list.length}件の島` : '';
+  };
+  document.querySelectorAll('#galSort button').forEach(b => b.addEventListener('click', () => { sort = b.dataset.sort; document.querySelectorAll('#galSort button').forEach(x => x.classList.toggle('on', x === b)); render(); }));
   try {
-    const r = await fetch('https://api.github.com/repos/kiyotake1229/hiraku-jima/issues?labels=island&state=open&per_page=30&sort=created&direction=desc');
+    const r = await fetch('https://api.github.com/repos/kiyotake1229/hiraku-jima/issues?labels=island&state=open&per_page=50&sort=created&direction=desc', {headers:{Accept:'application/vnd.github+json'}});
     if (!r.ok) throw new Error(r.status);
     const items = (await r.json()).filter(i => !i.pull_request);
-    const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const cards = items.map(i => { const m = (i.body || '').match(/HIRAKU1\.[A-Za-z0-9+\/=]{100,}/); if (!m) return '';
+    posts = items.map(i => { const m = (i.body || '').match(/HIRAKU1\.[A-Za-z0-9+\/=]{100,}/); if (!m) return null;
       const note = (i.body || '').replace(/HIRAKU1\.[A-Za-z0-9+\/=]+/g, '').replace(/この下の行に島コード.*?\n/s, '').trim().slice(0, 120);
-      const d = new Date(i.created_at); const date = d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate();
-      return `<div class="gi"><div class="t">${esc(i.title).slice(0, 40)}</div><div class="m">${esc(i.user && i.user.login || '')} ・ ${date}</div>${note ? `<div class="c">${esc(note)}</div>` : ''}<a class="btn p" href="index.html#visit=${encodeURIComponent(m[0])}">見学する</a></div>`; }).filter(Boolean);
-    el.innerHTML = cards.length ? cards.join('') : '<div class="gal-note">まだ投稿がありません。最初の島を投稿してみませんか。</div>';
+      const d = new Date(i.created_at);
+      return {title: String(i.title || '').slice(0, 40), user: (i.user && i.user.login) || '', date: d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate(), ts: d.getTime(), note, code: m[0], url: /^https:\/\/github\.com\//.test(i.html_url || '') ? i.html_url : 'https://github.com/kiyotake1229/hiraku-jima/issues', likes: likesOf(i)}; }).filter(Boolean);
+    render();
   } catch (e) { el.innerHTML = '<div class="gal-note">いまは読み込めませんでした。時間をおいて開き直してください。</div>'; }
 })();
 // カードをスクロールで順に表示

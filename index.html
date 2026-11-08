@@ -169,9 +169,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 .bd.done{color:var(--text)}
 .bd:active .ic{transform:scale(.9)}
 .bd .bp{height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin:3px 6px 0;overflow:hidden}.bd .bp i{display:block;height:100%;background:var(--accent)}
-#bubble{position:fixed;left:0;top:0;transform:translate(-50%,-100%);background:#fff;color:#1b2740;border-radius:14px;padding:8px 12px;font-size:13px;line-height:1.5;max-width:230px;z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:opacity .2s}
-#bubble.show{opacity:1}
-#bubble::after{content:"";position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+#bubble,.cb{position:fixed;left:0;top:0;transform:translate(-50%,-100%);background:#fff;color:#1b2740;border-radius:14px;padding:8px 12px;font-size:13px;line-height:1.5;max-width:230px;z-index:7;box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:opacity .2s}
+#bubble.show,.cb.show{opacity:1}
+.cb{font-size:12px;max-width:180px;padding:6px 10px;background:#fff8e6;z-index:6}.cb::after{border-top-color:#fff8e6}.cb b{font-size:12px;color:#8a6a1e}
+#bubble::after,.cb::after{content:"";position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);border:8px solid transparent;border-top-color:#fff;border-bottom:0}
 #bubble b{font-size:14px;margin-right:6px}#bubble .tag{background:rgba(27,39,64,.1);color:#1b2740}
 #visit{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 96px);z-index:6;display:flex;align-items:center;gap:10px;background:rgba(20,30,50,.9);border:1px solid rgba(255,200,87,.5);border-radius:999px;padding:6px 8px 6px 14px;font-size:13px;font-weight:700;backdrop-filter:blur(8px)}
 #visit .btn{padding:6px 12px;font-size:12px}
@@ -225,7 +226,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
   </div>
 </div>
 
-<div id="bubble"></div>
+<div id="bubble"></div><div id="cb1" class="cb"></div><div id="cb2" class="cb"></div>
 <div id="visit" style="display:none"><span id="visitT"></span><button class="btn p" id="visitBack">もどる</button></div>
 <div id="side">
   <button class="ib" id="bQuest" title="今日のおねがい・目標"></button>
@@ -445,6 +446,17 @@ const B = {
   kcorridor:{n:'虹の回廊',    cat:'found', era:0, world:'sky', cost:{c:2000,s:250}, happy:25, d:'虹の橋がつながって回廊に。幸福+25'},
   bigport: {n:'大きな港',     cat:'found', era:0, cost:{c:2000,w:400,s:200}, coins:14, happy:5, d:'港に市場と灯台がついて大きな港に。コイン+14/秒、幸福+5'},
   campus:  {n:'学園都市',     cat:'found', era:0, cost:{c:4000,w:400,s:500}, coins:12, happy:18, h:1.3, d:'学校と図書館がそろって学園都市に。コイン+12/秒、幸福+18'},
+  // 島の名物（その種類の島でしか合体しない）
+  ranch:   {n:'牧場',         cat:'found', era:0, isle:'green',  cost:{c:600,w:120},   food:25, happy:6, coins:3, d:'みどりの島の名物。畑と公園が牧場に。食料+25、幸福+6、コイン+3/秒'},
+  camp:    {n:'キャンプ場',   cat:'found', era:0, isle:'green',  cost:{c:400,w:80},    happy:12, coins:3, d:'みどりの島の名物。池のほとりのキャンプ場。幸福+12、コイン+3/秒。夜に火が灯る'},
+  lodge:   {n:'森のロッジ',   cat:'found', era:0, isle:'forest', cost:{c:500,w:150},   pop:6, happy:8, coins:2, d:'深い森の島の名物。森に建つロッジ。6人が住めて幸福+8、コイン+2/秒'},
+  treehouse:{n:'ツリーハウス村', cat:'found', era:0, isle:'forest', cost:{c:900,w:250}, pop:12, happy:10, h:1.2, d:'深い森の島の名物。木の上の家々。12人が住めて幸福+10'},
+  mine:    {n:'鉱山町',       cat:'found', era:0, isle:'rock',   cost:{c:800,s:150},   coins:12, pop:6, happy:-2, d:'岩の島の名物。坑道と家が集まった鉱山町。コイン+12/秒、6人が住める、幸福-2'},
+  fort:    {n:'岩山の砦',     cat:'found', era:0, isle:'rock',   cost:{c:1500,s:300},  pop:10, happy:8, coins:4, h:1.2, d:'岩の島の名物。岩を積んだ砦。10人が住めて幸福+8、コイン+4/秒'},
+  kamakura:{n:'かまくら村',   cat:'found', era:0, isle:'snow',   cost:{c:300,w:40},    pop:8, happy:10, d:'雪の島の名物。雪で作った家の村。8人が住めて幸福+10。夜に光る'},
+  icefes:  {n:'雪まつり',     cat:'found', era:0, isle:'snow',   cost:{c:1200,s:100},  happy:22, coins:5, d:'雪の島の名物。氷の彫刻が並ぶお祭り。幸福+22、コイン+5/秒'},
+  oasis:   {n:'オアシス',     cat:'found', era:0, isle:'sand',   cost:{c:700,w:60},    happy:16, food:15, coins:4, d:'砂の島の名物。砂漠に湧いた泉とヤシの木。幸福+16、食料+15、コイン+4/秒'},
+  ruins:   {n:'砂の遺跡',     cat:'found', era:0, isle:'sand',   cost:{c:1000,s:200},  coins:10, happy:12, d:'砂の島の名物。砂に埋もれた古い遺跡。コイン+10/秒、幸福+12'},
   '__big': {n:'大型建物の一部', cat:'none', cost:{}},
   wpagoda: {n:'五重塔',       cat:'deco', era:4, world:'wa', cost:{c:4500,w:500,s:500},   happy:20, coins:5, h:1.9, d:'幸福+20、コイン+5/秒'},
 };
@@ -770,6 +782,16 @@ function makeBuilding(k, v, lv){
     case 'sreef': sub('scoral',0.7,-0.28,0.22); sub('scoral',0.7,0.28,0.22); sub('scoral',0.8,0,-0.25); sub('spearl',0.5,0.33,-0.33); bx(g,0.92,0.03,0.92,0xffd3a6,0,0,0); break;
     case 'kfw': sub('kwind',0.75,-0.28,-0.1); sub('kwind',0.75,0.28,-0.1); sub('kfarm',0.7,0,0.3); break;
     case 'kcorridor': sub('krainbow',0.7,-0.25,0); sub('krainbow',0.7,0.25,0); sub('kcloud',0.5,0,0.35); break;
+    case 'ranch': bx(g,0.92,0.03,0.92,0x8fb86a,0,0,0); sub('farm',0.55,-0.25,0.25,0.03); bx(g,0.3,0.22,0.26,0xc8432a,0.28,0.03,-0.26); roof(g,0.34,0.14,0.3,0x6b2a1a,0.28,0.25,-0.26); for (let i=0;i<4;i++){ bx(g,0.02,0.1,0.02,0xd9b676,-0.44+i*0.29,0.03,0.44); } bx(g,0.9,0.015,0.015,0xd9b676,0,0.1,0.44); [[-0.2,-0.25],[0.15,0.25]].forEach(([x,z])=>{ const c=sph(g,0.07,0xffffff,x,0.1,z); c.scale.set(1.5,1,1); sph(g,0.03,0x222,x+0.07,0.12,z); sph(g,0.03,0x222,x-0.04,0.14,z+0.03); }); break;
+    case 'camp': bx(g,0.92,0.03,0.92,0x6fae5a,0,0,0); cone(g,0.2,0.22,0xff8a5c,-0.25,0.03,0.15); cone(g,0.17,0.2,0x5ad1a6,0.28,0.03,-0.22); tree(g,0.32,0.32,0.7); sub('bench',0.5,-0.3,-0.33,0.03); { [0,1,2].forEach(i=>{ const l=bx(g,0.16,0.03,0.03,0x6b4321,0.02,0.04,0.3); l.rotation.y=i*1.05; }); const f=sph(g,0.06,0xffa040,0.02,0.1,0.3,gmat(0xffa040)); anims.push({g,fn:(t)=>{ const k=1+Math.sin(t*9)*0.15; f.scale.set(k,1.2+Math.sin(t*7)*0.3,k); }}); } break;
+    case 'lodge': bx(g,0.56,0.3,0.46,0x6b4321,-0.08,0,0.02); roof(g,0.66,0.26,0.56,0x3a2a1a,-0.08,0.3,0.02); bx(g,0.08,0.22,0.08,0x8e98a4,0.1,0.42,-0.12); bx(g,0.12,0.14,0.01,0,-0.08,0.08,0.255,WIN); bx(g,0.3,0.03,0.12,0x9b6b3a,-0.08,0,0.3); tree(g,-0.36,-0.34,0.8); tree(g,0.3,-0.32,0.7); sub('lamp',0.55,0.36,0.33); break;
+    case 'treehouse': [[-0.28,-0.26],[0.3,-0.2],[0,0.3]].forEach(([x,z],i)=>{ tree(g,x,z,1.0); bx(g,0.2,0.14,0.2,0x9b6b3a,x,0.5,z); roof(g,0.24,0.1,0.24,[0xc8432a,0x5b7fb5,0x6a9a5b][i],x,0.64,z); bx(g,0.05,0.07,0.005,0,x,0.53,z+0.103,WIN); }); { const b=bx(g,0.56,0.015,0.05,0xd9b676,0.01,0.56,-0.23); const b2=bx(g,0.05,0.015,0.5,0xd9b676,0.16,0.56,0.05); b2.rotation.y=-0.5; } break;
+    case 'mine': sub('quarry',0.75,-0.22,0.2); bx(g,0.3,0.28,0.26,0x4a4a52,0.3,0,-0.3); bx(g,0.14,0.18,0.02,0x111,0.3,0,-0.17); bx(g,0.04,0.2,0.03,0x6b4321,0.21,0,-0.165); bx(g,0.04,0.2,0.03,0x6b4321,0.39,0,-0.165); bx(g,0.22,0.03,0.03,0x6b4321,0.3,0.19,-0.165); bx(g,0.12,0.08,0.09,0x555,0.3,0.03,0.12); sph(g,0.025,0x222,0.25,0.02,0.17); sph(g,0.025,0x222,0.35,0.02,0.17); sph(g,0.04,0xcfd8e3,0.3,0.1,0.12); sub('hut',0.5,-0.3,-0.33); break;
+    case 'fort': bx(g,0.6,0.42,0.6,0x8e98a4,0,0,0); [[-0.3,-0.3],[0.3,-0.3],[-0.3,0.3],[0.3,0.3]].forEach(([x,z])=>{ cyl(g,0.1,0.6,0x6b7580,x,0,z); cyl(g,0.12,0.04,0x5a6470,x,0.6,z); }); for (let i=0;i<4;i++){ bx(g,0.06,0.06,0.06,0x6b7580,-0.2+i*0.13,0.42,0.3); bx(g,0.06,0.06,0.06,0x6b7580,-0.2+i*0.13,0.42,-0.3); } bx(g,0.12,0.16,0.02,0x332,0,0,0.31); bx(g,0.015,0.3,0.015,0xdfe6ee,0,0.42,0); bx(g,0.12,0.07,0.01,0xe25555,0.07,0.65,0); break;
+    case 'kamakura': bx(g,0.92,0.04,0.92,0xf6fbff,0,0,0); { const gl=[]; [[-0.26,0.22,0.2],[0.26,0.2,0.19],[0,-0.22,0.23]].forEach(([x,z,r])=>{ const d=sph(g,r,0xffffff,x,0.04,z); d.scale.y=0.85; bx(g,r*0.5,r*0.6,0.02,0x2a2a3a,x,0.04,z+r*0.93); gl.push(sph(g,r*0.3,0xffc857,x,0.04+r*0.3,z+r*0.75,gmat(0xffc857))); }); anims.push({g,fn:(t)=>{ gl.forEach((q,i)=>{ const k=1+Math.sin(t*3+i)*0.15; q.scale.set(k,k,k); }); }}); } break;
+    case 'icefes': bx(g,0.92,0.04,0.92,0xdfeeff,0,0,0); { const ice=glass(0x9fd6ff); bx(g,0.14,0.36,0.14,0x9fd6ff,-0.26,0.04,-0.2,ice); cone(g,0.11,0.3,0x9fd6ff,0.26,0.04,-0.22,ice); const s2=sph(g,0.12,0x9fd6ff,0,0.16,-0.25,ice); const sw=sph(g,0.1,0xffffff,-0.28,0.14,0.26); sph(g,0.07,0xffffff,-0.28,0.3,0.26); cone(g,0.02,0.08,0xff8a5c,-0.28,0.3,0.34).rotation.x=Math.PI/2; } sub('lamp',0.55,0.3,0.3); sub('lamp',0.55,0,0.36); bx(g,0.9,0.015,0.015,0x5a7cff,0,0.5,0.1); for (let i=0;i<7;i++) bx(g,0.05,0.07,0.01,[0x5a7cff,0xffffff,0xff6fa8][i%3],-0.36+i*0.12,0.43,0.1); break;
+    case 'oasis': bx(g,0.92,0.04,0.92,0xe9d8a6,0,0,0); { const w=sph(g,0.3,0x3fa8e0,0,0.0,0.05,glass(0x3fa8e0)); w.scale.set(1.2,0.15,0.9); } [[-0.32,-0.28,1],[0.3,-0.3,0.9],[0.34,0.3,0.8]].forEach(([x,z,k])=>{ const tr=cyl(g,0.03,0.45*k,0x9b6b3a,x,0.04,z); tr.rotation.z=(x<0?0.15:-0.15); for (let i=0;i<5;i++){ const f=bx(g,0.22*k,0.02,0.07*k,0x4fa84f,x,0.47*k,z); f.rotation.y=i*1.26; f.rotation.z=0.4; f.position.x+=Math.cos(i*1.26)*0.08*k; f.position.z-=Math.sin(i*1.26)*0.08*k; } }); break;
+    case 'ruins': bx(g,0.92,0.04,0.92,0xe9d8a6,0,0,0); [[-0.3,-0.3,0.34],[0.3,-0.3,0.3],[-0.3,0.3,0.16],[0.3,0.3,0.36]].forEach(([x,z,h])=>{ cyl(g,0.05,h,0xd9c7a0,x,0.04,z); cyl(g,0.07,0.03,0xd9c7a0,x,0.04+h,z); }); bx(g,0.5,0.04,0.3,0xd9c7a0,0,0.04,0); cone(g,0.08,0.4,0xcbb989,0,0.08,0); { const sp=bx(g,0.26,0.12,0.14,0xcbb989,0,0.08,0.32); bx(g,0.1,0.1,0.1,0xcbb989,0.1,0.2,0.32); } bx(g,0.64,0.04,0.06,0xd9c7a0,0,0.4,-0.3); break;
     case 'bridge': { bx(g,1.04,0.07,0.5,0x9b6b3a,0,0,0); [-0.23,0.23].forEach(z=>{ bx(g,1.04,0.03,0.03,0xc49a6c,0,0.2,z); [-0.45,0,0.45].forEach(x=>bx(g,0.04,0.2,0.04,0x7a4f2b,x,0.07,z)); }); [[-0.38,-0.17],[0.38,0.17],[-0.38,0.17],[0.38,-0.17]].forEach(([x,z])=>bx(g,0.08,0.3,0.08,0x5a3a1a,x,-0.3,z)); break; }
     case 'sakura': { cyl(g,0.06,0.35,0x6b4321,0,0,0); sph(g,0.3,0xffb7d5,0,0.55,0); sph(g,0.22,0xffc9e0,0.18,0.46,0.1); sph(g,0.2,0xff9fc7,-0.17,0.48,-0.1); const pt=[]; for (let i=0;i<6;i++){ const q=sph(g,0.03,0xffd4e6,0,0.4,0); q.castShadow=false; pt.push(q);} anims.push({g,fn:(t)=>{ pt.forEach((q,i)=>{ const u=((t*0.22+i/6)%1); q.position.set(0.35*Math.sin(u*6+i), 0.75-u*0.72, 0.35*Math.cos(u*5+i)); }); }}); break; }
     case 'light': cyl(g,0.22,0.12,0x9aa3ad,0,0,0); for (let i=0;i<4;i++) cyl(g,0.14-i*0.012,0.24,i%2?0xe25555:0xffffff,0,0.12+i*0.24,0); cyl(g,0.12,0.16,0x3a4450,0,1.08,0); sph(g,0.1,0xfff2b0,0,1.3,0,GLOW); cone(g,0.15,0.12,0xe25555,0,1.38,0); break;
@@ -1126,6 +1148,7 @@ function updateWalkers(dt){
   while (walkers.length>want) world.remove(walkers.pop());
   for (let w=walkers.length-1; w>=0; w--){ const g=walkers[w]; const u=g.userData;
     if (u.t>=1){
+      if (u.pause) continue;
       const ns=neighbors4(u.i).filter(walkable);
       if (!ns.length){ world.remove(g); walkers.splice(w,1); continue; }
       const roads=ns.filter(j=>(tiles[j].p&&P[tiles[j].p].road) || tiles[j].b==='bridge'); const pick=(roads.length && Math.random()<0.85) ? roads : ns; const j=pick[(Math.random()*pick.length)|0];
@@ -1233,17 +1256,67 @@ const CTX_LINES=[
   {ok:()=>T.k!=='island', l:['{world}に住めるなんて、夢みたい']},
   {ok:()=>S.islands && S.islands.length>1, l:['{isle}のほかにも島があるんでしょ？いつか行ってみたい']},
   {ok:()=>S.found.length>0, l:['合体した建物、見たよ。すごいね']},
+  {ok:()=>curKind()!=='green', l:['{isle}は{kindn}。ここでしか作れない名物があるんだって','この島の名物、まだ見つかってないのかな']},
+  {ok:()=>curKind()==='green' && !S.found.includes('ranch'), l:['牧場があったら、牛乳が飲めるのになあ']},
 ];
 function ensurePeople(){ if (S.people && S.people.length) return; const rnd=rngFrom(S.seed^0x5bd1e995); const names=P_NAMES.slice().sort(()=>rnd()-0.5); S.people=names.slice(0,24).map((n,i)=>({n, tr:(rnd()*TRAITS.length)|0})); }
 let nextPid=0;
 function assignPerson(g){ ensurePeople(); const used=new Set(walkers.map(w=>w.userData.pid)); let pid=nextPid; for (let k=0;k<S.people.length;k++){ const c=(nextPid+k)%S.people.length; if (!used.has(c)){ pid=c; break; } } nextPid=(pid+1)%S.people.length; g.userData.pid=pid; }
-function fillLine(t){ return t.replace('{isle}', (S.islands&&S.islands[S.isle]&&S.islands[S.isle].n)||'この島').replace('{world}', T.n).replace('{pop}', totalPop()); }
+function fillLine(t){ return t.replace('{isle}', (S.islands&&S.islands[S.isle]&&S.islands[S.isle].n)||'この島').replace('{world}', T.n).replace('{pop}', totalPop()).replace('{kindn}', KINDS[curKind()].n); }
 function lineFor(p){ const ctx=CTX_LINES.filter(c=>{ try{ return c.ok(); }catch(e){ return false; } }); if (ctx.length && Math.random()<0.45){ const c=ctx[(Math.random()*ctx.length)|0]; return fillLine(c.l[(Math.random()*c.l.length)|0]); } const tr=TRAITS[p.tr]; return fillLine(tr.l[(Math.random()*tr.l.length)|0]); }
 const bubble={w:null, t:0};
 function walkerAt(cx, cy){ ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1); ray.setFromCamera(ndc, camera); const hits=ray.intersectObjects(walkers, true); if (!hits.length) return null; let o=hits[0].object; while (o && !walkers.includes(o)) o=o.parent; return o; }
 function talk(g){ ensurePeople(); const p=S.people[g.userData.pid||0]; if (!p) return; bubble.w=g; bubble.t=performance.now(); $('bubble').innerHTML=`<b>${p.n}</b><span class="tag">${TRAITS[p.tr].n}</span><br>${lineFor(p)}`; $('bubble').classList.add('show'); g.userData.bounce=1; sfx('tick'); haptic(6); if (!visiting) count('talk'); }
 function bubbleUpdate(){ if (!bubble.w) return; if (performance.now()-bubble.t>4500 || !walkers.includes(bubble.w)){ bubble.w=null; $('bubble').classList.remove('show'); return; }
   const v=new THREE.Vector3(); bubble.w.getWorldPosition(v); v.y+=0.55; v.project(camera); $('bubble').style.left=((v.x+1)/2*innerWidth)+'px'; $('bubble').style.top=((1-v.y)/2*innerHeight)+'px'; }
+
+// 住民どうしの会話（近くに立った2人が、かけ合いの吹き出しを出す）
+const CHATS=[
+  ['{you}、おはよう','おはよう。今日もいい天気だね'],['どこ行くの？','市場まで。いっしょに行く？'],['この島、人口{pop}人だって','ふえたねえ。にぎやかになった'],
+  ['島主さん、今日も来てたよ','毎日コツコツ、えらいよね'],['あの建物、見た？','見た見た。すごく大きかった'],['道が増えて歩きやすいね','ほんと。前はぬかるんでたのに'],
+  ['{isle}って、いい名前だよね','うん。気に入ってる'],['きのう星が落ちてくるのを見た','それ、目標の星じゃない？'],['最近、鳥が増えた気がする','木が増えたからかな'],
+  ['ベンチで休んでく？','いいね。ちょっとだけ'],['新しい人が引っ越してきたって','家が足りるといいけど'],['夜の街灯、きれいだよね','散歩したくなるよね'],
+  ['今日の夕ごはん、なに？','畑でとれた野菜のスープ'],['{world}の空、今日も変わってるね','ここに住めて幸せだなあ'],['ねえ、ひみつの合体、知ってる？','知らない。教えて！'],['海のむこうに何があるのかな','港ができたら分かるかもね'],
+];
+const TRAIT_CHATS=[
+  [['ふぁ…ねむい','もうお昼だよ、{you}'],['今日は何もしない日にする','いいなあ、それ']],
+  [['ねえねえ、聞いて聞いて','また？でも聞くよ'],['{you}の家の屋根、新しくした？','よく気づいたね！']],
+  [['もう畑を3往復したよ','はやい。少し休みなよ'],['仕事が山ほどある','手伝おうか？']],
+  [['今夜は星がきれいだと思うんだ','じゃあ一緒に見ようよ'],['さくらの下で一句よみたい','{you}らしいね']],
+  [['おなかすいた…','さっき食べたばかりでしょ'],['市場に新しいパン屋ができたらなあ','食べ物の話ばっかり']],
+  [['さむい…家に帰りたい','まだ秋だよ、{you}'],['こたつがほしい','島主さんにお願いしてみる？']],
+  [['その服、似合ってるね','ほんと？うれしい'],['地面の色、もっと塗ってほしいな','花の道がいいよね']],
+  [['橋のむこうに行ってみたい','危なくないかな'],['新しい島には名物があるらしい','ほんと？見てみたいな']],
+];
+const CHAT_CTX=[
+  {ok:()=>nightV>0.5, l:[['もう暗いね','星を数えながら帰ろう'],['街灯がついたね','夜の街もいいよね']]},
+  {ok:()=>eco.hm<1, l:[['最近ちょっと退屈','公園でもできたらいいのにね']]},
+  {ok:()=>T.seasons && seasonIdx()===3, l:[['雪だ！','寒いけど、きれいだね']]},
+  {ok:()=>T.seasons && seasonIdx()===0, l:[['花びらが舞ってる','春だねえ']]},
+  {ok:()=>S.found.length>0, l:[['合体した建物、見た？','見た！あれすごかった']]},
+  {ok:()=>curKind()!=='green', l:[['この島の名物、知ってる？','{kindn}ならではのものがあるって聞いた']]},
+  {ok:()=>S.islands && S.islands.length>1, l:[['となりの島に行ってみた？','まだ。船に乗れるのかな']]},
+];
+const chat={a:null, b:null, t:0, l:null}; let chatTimer=8, nightV=0;
+function chatLines(pa, pb){ let pool=[]; CHAT_CTX.forEach(c=>{ try{ if (c.ok()) pool=pool.concat(c.l); }catch(e){} });
+  if (TRAIT_CHATS[pa.tr] && Math.random()<0.5) pool=pool.concat(TRAIT_CHATS[pa.tr]); if (!pool.length || Math.random()<0.4) pool=pool.concat(CHATS);
+  const L=pool[(Math.random()*pool.length)|0]; const f=(t,you)=>fillLine(t).replace('{you}', you.n); return [f(L[0],pb), f(L[1],pa)]; }
+function chatStart(a, b){ ensurePeople(); const pa=S.people[a.userData.pid||0], pb=S.people[b.userData.pid||0]; if (!pa||!pb) return;
+  chat.a=a; chat.b=b; chat.t=performance.now(); chat.l=chatLines(pa,pb); [a,b].forEach(w=>{ const u=w.userData; u.pause=true; u.t=1; w.position.set(u.i%N, 0.5, (u.i/N)|0); });
+  a.rotation.y=Math.atan2(b.position.x-a.position.x, b.position.z-a.position.z); b.rotation.y=a.rotation.y+Math.PI;
+  $('cb1').innerHTML=`<b>${pa.n}</b> ${chat.l[0]}`; $('cb2').innerHTML=`<b>${pb.n}</b> ${chat.l[1]}`; $('cb1').classList.add('show'); a.userData.bounce=1; if (!visiting) count('chat'); }
+function chatEnd(){ if (chat.a) chat.a.userData.pause=false; if (chat.b) chat.b.userData.pause=false; chat.a=chat.b=null; $('cb1').classList.remove('show'); $('cb2').classList.remove('show'); }
+function placeBubble(el, w){ const v=new THREE.Vector3(); w.getWorldPosition(v); v.y+=0.55; v.project(camera); el.style.left=((v.x+1)/2*innerWidth)+'px'; el.style.top=((1-v.y)/2*innerHeight)+'px'; }
+function chatUpdate(dt){
+  if (chat.a){ const el=performance.now()-chat.t;
+    if (el>5800 || !walkers.includes(chat.a) || !walkers.includes(chat.b)){ chatEnd(); chatTimer=10+Math.random()*12; return; }
+    if (el>2600 && !$('cb2').classList.contains('show')){ $('cb2').classList.add('show'); chat.b.userData.bounce=1; }
+    if (el>3000) $('cb1').classList.remove('show');
+    placeBubble($('cb1'), chat.a); placeBubble($('cb2'), chat.b); return; }
+  chatTimer-=dt; if (chatTimer>0 || walkers.length<2) return;
+  const st=walkers.filter(w=>w!==bubble.w && w.userData.t>=0.6); let best=null;
+  for (let i=0;i<st.length && !best;i++) for (let j=i+1;j<st.length;j++){ const a=st[i].userData.i, b=st[j].userData.i; const d=Math.abs(a%N-b%N)+Math.abs(((a/N)|0)-((b/N)|0)); if (d<=1){ best=[st[i],st[j]]; break; } }
+  if (best) chatStart(best[0], best[1]); else chatTimer=1.5; }
 
 // ---------------------------------------------------------------- 毎日コツコツ（ログイン・おねがい・目標）
 const todayStr = (d) => { d=d||new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
@@ -1302,6 +1375,9 @@ const GOALS = [
   {id:'isle4',  n:'島を4つにする',        v:()=>(S.islands?S.islands.length:1), need:4, r:{c:10000,st:4}},
   {id:'fusion10',n:'合体を10種類見つける', v:()=>S.found.length, need:10, r:{c:5000,st:4}},
   {id:'fusion25',n:'合体を25種類見つける', v:()=>S.found.length, need:25, r:{c:20000,st:8}},
+  {id:'special1',n:'島の名物を見つける',    v:()=>S.found.filter(id=>{ const r=FUSIONS.find(f=>f.id===id); return r&&r.kind; }).length, need:1, r:{c:3000,st:3}},
+  {id:'special3',n:'島の名物を3つ見つける', v:()=>S.found.filter(id=>{ const r=FUSIONS.find(f=>f.id===id); return r&&r.kind; }).length, need:3, r:{c:12000,st:6}},
+  {id:'chat3',  n:'住民どうしの会話を3回聞く', v:()=>S.life.chat||0, need:3, r:{c:400,st:1}},
   {id:'star1',  n:'星の建物を建てる',    v:()=>cntB(t=>B[t.b].cost.st), need:1, r:{c:1500,st:1}},
   {id:'event1', n:'季節のイベント建物を建てる', v:()=>cntB(t=>B[t.b].season!=null), need:1, r:{c:500,st:1}},
   {id:'world1', n:'新しい世界をひらく',  v:()=>S.worlds.length-1, need:1, r:{c:2000,st:2}},
@@ -1371,12 +1447,26 @@ const FUSIONS = [
   {id:'sreef',     base:'scoral',   need:{scoral:2, spearl:1},   res:'sreef',     hint:'海底都市: 珊瑚園を3つと真珠工房を集めると…'},
   {id:'kfw',       base:'kwind',    need:{kwind:1, kfarm:1},     res:'kfw',       hint:'空中都市: 風の発電塔を2本と雲の畑を集めると…'},
   {id:'kcorridor', base:'krainbow', need:{krainbow:1, kcloud:1}, res:'kcorridor', hint:'空中都市: 虹の橋を2つと雲の家を並べると…'},
+  // 島の名物（kind の島でだけ合体する）
+  {id:'ranch',     kind:'green',  base:'farm',   need:{farm:1, park:1},      res:'ranch',     hint:'みどりの島: 畑2つのとなりに公園があると…'},
+  {id:'camp',      kind:'green',  base:'bench',  need:{pond:1, forest:1},    res:'camp',      hint:'みどりの島: 池と森のそばにベンチを置くと…'},
+  {id:'lodge',     kind:'forest', base:'hut',    need:{forest:2, lamp:1},    res:'lodge',     hint:'深い森の島: 森に囲まれた小さな家に街灯をつけると…'},
+  {id:'treehouse', kind:'forest', base:'park',   need:{forest:3},            res:'treehouse', hint:'深い森の島: 森の中に公園を作ると…'},
+  {id:'mine',      kind:'rock',   base:'quarry', need:{quarry:1, hut:2},     res:'mine',      hint:'岩の島: 石切り場2つと小さな家2軒を集めると…'},
+  {id:'fort',      kind:'rock',   base:'house',  need:{rock:2, lamp:1},      res:'fort',      hint:'岩の島: 岩のそばの家に街灯をつけると…'},
+  {id:'kamakura',  kind:'snow',   base:'hut',    need:{hut:1, snowp:3},      res:'kamakura',  hint:'雪の島: 雪の上に小さな家を2軒ならべると…'},
+  {id:'icefes',    kind:'snow',   base:'statue', need:{lamp:2, snowp:2},     res:'icefes',    hint:'雪の島: 雪の上の銅像を街灯で照らすと…'},
+  {id:'oasis',     kind:'sand',   base:'park',   need:{pond:2, beach:1},     res:'oasis',     hint:'砂の島: 砂浜のそばの公園に池を2つ塗ると…'},
+  {id:'ruins',     kind:'sand',   base:'shrine', need:{beach:2, quarry:1},   res:'ruins',     hint:'砂の島: 砂浜の神社のとなりに石切り場を作ると…'},
 ];
-const NEED_N = {sea:'海', pond:'池', road:'道', flowerp:'花の塗り'};
+function curKind(){ return (S && S.islands && S.islands[S.isle] && S.islands[S.isle].kind) || 'green'; }
+function kindSpecials(kind){ return FUSIONS.filter(r=>r.kind===kind); }
+const NEED_N = {sea:'海', pond:'池', road:'道', flowerp:'花の塗り', snowp:'雪の塗り', beach:'砂浜', forest:'森', rock:'岩'};
 function needText(need){ return Object.keys(need).map(k=>`${B[k]?B[k].n:NEED_N[k]}×${need[k]}`).join('・'); }
-function recipeText(r){ return `${B[r.base].n} のまわりに ${needText(r.need)}`; }
+function recipeText(r){ return `${B[r.base].n} のまわりに ${needText(r.need)}${r.kind?`（${KINDS[r.kind].n}だけ）`:''}`; }
 function fusionMatch(j, r){ const cnt={};
-  for (const q of neighbors8(j)){ const t=tiles[q]; if (t.t==='w') cnt.sea=(cnt.sea||0)+1; if (t.p){ const p=P[t.p]; if (p.water) cnt.pond=(cnt.pond||0)+1; if (p.road) cnt.road=(cnt.road||0)+1; if (p.fl) cnt.flowerp=(cnt.flowerp||0)+1; } if (t.own && t.b && t.b!=='__big') cnt[t.b]=(cnt[t.b]||0)+1; }
+  if (r.kind && curKind()!==r.kind) return false;
+  for (const q of neighbors8(j)){ const t=tiles[q]; if (t.t==='w') cnt.sea=(cnt.sea||0)+1; if (t.t==='s') cnt.beach=(cnt.beach||0)+1; if (t.t==='f') cnt.forest=(cnt.forest||0)+1; if (t.t==='r') cnt.rock=(cnt.rock||0)+1; if (t.p==='snow') cnt.snowp=(cnt.snowp||0)+1; if (t.p){ const p=P[t.p]; if (p.water) cnt.pond=(cnt.pond||0)+1; if (p.road) cnt.road=(cnt.road||0)+1; if (p.fl) cnt.flowerp=(cnt.flowerp||0)+1; } if (t.own && t.b && t.b!=='__big') cnt[t.b]=(cnt[t.b]||0)+1; }
   for (const k in r.need) if ((cnt[k]||0) < r.need[k]) return false; return true; }
 function checkFusions(i){ if (visiting) return false;
   for (const j of [i, ...neighbors8(i)]){ const tl=tiles[j]; if (!tl.own || !tl.b) continue;
@@ -1386,7 +1476,7 @@ function checkFusions(i){ if (visiting) return false;
       return true; } }
   return false; }
 function showDiscovery(r){ const b=B[r.res];
-  overlay(`<h2>${I.starS}新しい発見！</h2><div class="disc"><img src="${THUMB[r.res]||''}"><div><div class="qn">${b.n}</div><div class="qd">${b.d}</div><div class="qd" style="margin-top:6px;color:var(--accent)">${recipeText(r)}</div></div></div><p>図鑑に記録しました（${S.found.length}/${FUSIONS.length}）。同じ組み合わせを作れば、何度でもできます。</p><div class="row"><button class="btn p" id="bOk">やった！</button></div>`);
+  overlay(`<h2>${I.starS}新しい発見！</h2><div class="disc"><img src="${THUMB[r.res]||''}"><div><div class="qn">${b.n}</div><div class="qd">${b.d}</div><div class="qd" style="margin-top:6px;color:var(--accent)">${recipeText(r)}</div></div></div><p>図鑑に記録しました（${S.found.length}/${FUSIONS.length}）。同じ組み合わせを作れば、何度でもできます。${r.kind?`<br>${KINDS[r.kind].n}の名物です。`:''}</p><div class="row"><button class="btn p" id="bOk">やった！</button></div>`);
   $('bOk').onclick=closeOv; }
 // 住民からの手紙（日替わりの要望）
 const LETTERS = [
@@ -1733,8 +1823,8 @@ function showHelp(){
     <li>村になったら海ぎわに<b>港</b>を建て、右の船ボタンから<b>新しい島</b>を探せる（星とコイン）。島は何度でも増やせて、森の島・岩の島・雪の島などがある</li>
     <li>住まい・仕事・飾りタブの「<b>じぶんの建物</b>」で、ブロックを積んで自分だけの建物を作れる（8×8×6）。作った建物は島コードにも入るので、見学した人にも見える。<b>建物コード</b>で建物だけを人に渡せる</li>
     <li>島コードの画面から<b>みんなの島ギャラリー</b>に投稿できる。紹介ページ（about.html）に並び、だれでも見学できる</li>
-    <li>歩いている<b>住民</b>をタップすると話せる。名前と性格があって、島の様子で話が変わる</li>
-    <li>建物のまわりに決まった組み合わせがそろうと<b>合体</b>して新しいものになる（家3軒＋公園→団地 など）。見つけたものは<b>図鑑</b>に。設定の<b>島コード</b>で島を保存・共有でき、人の島を<b>見学</b>できる</li>
+    <li>歩いている<b>住民</b>をタップすると話せる。名前と性格があって、島の様子で話が変わる。近くに立った住民どうしも、かけ合いで話す</li>
+    <li>建物のまわりに決まった組み合わせがそろうと<b>合体</b>して新しいものになる（家3軒＋公園→団地 など）。見つけたものは<b>図鑑</b>に。島の種類ごとに、その島でしか合体しない<b>名物</b>もある（雪の島のかまくら村 など）。設定の<b>島コード</b>で島を保存・共有でき、人の島を<b>見学</b>できる</li>
     <li>1本指でドラッグ: 移動 / 2本指: ズーム / 右の回転ボタン: 視点回転</li></ul>
     <div class="row"><button class="btn p" id="bOk">はじめる</button></div>`);
   $('bOk').onclick=closeOv;
@@ -1824,19 +1914,19 @@ function otherIncome(){ return otherIslands().reduce((n,o)=>n+(o.pop||0)*0.15*(0
 function otherRes(k){ return otherIslands().reduce((n,o)=>n+((o.eco&&o.eco[k])||0),0); }
 function goIsland(idx){ if (idx===S.isle || !S.islands[idx]) return; const cur=S.islands[S.isle]; cur.tl=packTiles(); cur.pop=S.pop; cur.eco={housing:eco.housing,food:eco.food,happy:eco.happy,coins:eco.coins,wood:eco.wood,stone:eco.stone};
   const nx=S.islands[idx]; if (nx.tl){ unpackTiles(nx.tl); nx.tl=null; } else genMap(nx.seed, nx.shape, nx.kind); S.isle=idx; S.pop=nx.pop||0; S.seed=nx.seed; S.shape=nx.shape;
-  hideInfo(); selMesh.visible=false; cam.tx=0; cam.tz=0; cam.dist=18; calcEco(); applyTheme(); renderItems(); setHint(); renderRes(); save(); }
+  chatEnd(); hideInfo(); selMesh.visible=false; cam.tx=0; cam.tz=0; cam.dist=18; calcEco(); applyTheme(); renderItems(); setHint(); renderRes(); save(); }
 function isleCost(){ const n=S.islands.length; return {c:500*n, st:1+n}; }
 function hasPort(){ return tiles.some(t=>t.own && t.b==='port'); }
 function findIsland(){ const cost=isleCost(); if (S.era<2) return fail2('村になると航海できます'); if (!hasPort()) return fail2('この島に「港」を建てると船が出せる（仕事タブ）'); if (!canPay(cost)) return fail2('材料が足りない（'+costText(cost)+'）');
   pay(cost); const rnd=rngFrom((Math.random()*1e9)|0); const kinds=Object.keys(KINDS); const shapes=Object.keys(SHAPES);
   const isl={n:isleName(rnd), seed:(rnd()*1e9)|0, shape:shapes[(rnd()*shapes.length)|0], kind:kinds[(rnd()*kinds.length)|0], pop:0, eco:{}, tl:null};
   S.islands.push(isl); count('isle'); sfx('fanfare'); haptic([20,40,20]); goIsland(S.islands.length-1); closeOv();
-  overlay(`<h2>${I.ship}新しい島を見つけた！</h2><div class="disc"><div class="zq" style="width:64px;height:64px;font-size:30px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08)">${I.land}</div><div><div class="qn">${isl.n}</div><div class="qd">${KINDS[isl.kind].n}・${SHAPES[isl.shape].n}。${KINDS[isl.kind].d}</div></div></div><p>まんなかの土地から開拓できる。コインや材料は島のあいだで共通。島は右の船ボタンで行き来できる。</p><div class="row"><button class="btn p" id="bOk">上陸する</button></div>`); $('bOk').onclick=closeOv; return true; }
+  overlay(`<h2>${I.ship}新しい島を見つけた！</h2><div class="disc"><div class="zq" style="width:64px;height:64px;font-size:30px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08)">${I.land}</div><div><div class="qn">${isl.n}</div><div class="qd">${KINDS[isl.kind].n}・${SHAPES[isl.shape].n}。${KINDS[isl.kind].d}</div></div></div><p>まんなかの土地から開拓できる。コインや材料は島のあいだで共通。島は右の船ボタンで行き来できる。</p><p style="color:var(--accent)">この島だけの名物（合体）が${kindSpecials(isl.kind).length}つある。図鑑のヒントを見てみよう。</p><div class="row"><button class="btn p" id="bOk">上陸する</button></div>`); $('bOk').onclick=closeOv; return true; }
 function fail2(m){ toast(m); sfx('no'); return false; }
 function showIslands(){ ensureIslands(); const cost=isleCost();
   let html=`<h2>${I.ship}島をわたる</h2><p style="margin:0 0 6px">見つけた島はいつでも行き来できる。コイン・材料・星は共通で、離れている島の人口や収入もちゃんと入る。</p>`;
   S.islands.forEach((o,i)=>{ const cur=i===S.isle; const pop=cur?S.pop:(o.pop||0);
-    html += `<div class="wc"><div class="sky" style="background:${{green:'linear-gradient(#8fd07a,#4f9a4a)',forest:'linear-gradient(#4f9a4a,#2f6a3a)',rock:'linear-gradient(#b4bcc6,#6b7580)',snow:'linear-gradient(#ffffff,#cfe4ee)',sand:'linear-gradient(#f2e2b0,#d9b676)'}[o.kind||'green']}"></div><div class="qt"><div class="qn">${o.n}${cur?'<span class="tag g">いまここ</span>':''}</div><div class="qd">${KINDS[o.kind||'green'].n}・${SHAPES[o.shape||'round'].n}・人口${pop}</div></div>${cur?`<button class="btn" data-rename="${i}">名前</button>`:`<button class="btn p" data-go="${i}">わたる</button>`}</div>`; });
+    html += `<div class="wc"><div class="sky" style="background:${{green:'linear-gradient(#8fd07a,#4f9a4a)',forest:'linear-gradient(#4f9a4a,#2f6a3a)',rock:'linear-gradient(#b4bcc6,#6b7580)',snow:'linear-gradient(#ffffff,#cfe4ee)',sand:'linear-gradient(#f2e2b0,#d9b676)'}[o.kind||'green']}"></div><div class="qt"><div class="qn">${o.n}${cur?'<span class="tag g">いまここ</span>':''}</div><div class="qd">${KINDS[o.kind||'green'].n}・${SHAPES[o.shape||'round'].n}・人口${pop}</div><div class="qd" style="color:var(--accent)">名物: ${kindSpecials(o.kind||'green').map(r=>S.found.includes(r.id)?B[r.res].n:'？？？').join('・')}</div></div>${cur?`<button class="btn" data-rename="${i}">名前</button>`:`<button class="btn p" data-go="${i}">わたる</button>`}</div>`; });
   html += `<div class="wc"><div class="sky" style="background:linear-gradient(#3fa8e0,#1f6f99)"></div><div class="qt"><div class="qn">新しい島を探す</div><div class="qd">港から船を出す。${costText(cost)}${hasPort()?'':'（この島に港がない）'}</div></div><button class="btn p" id="bFind" ${(S.era>=2&&hasPort()&&canPay(cost))?'':'disabled style="opacity:.5"'}>出航</button></div>`;
   overlay(html + `<div class="row"><button class="btn p" id="bOk">閉じる</button></div>`); $('bOk').onclick=closeOv;
   $('bFind').onclick=()=>{ if (visiting) return toast('見学中は航海できません'); findIsland(); };
@@ -1876,7 +1966,7 @@ function frame(now){
   if (perf.on){ perf.n++; perf.t+=dt; if (perf.t>8){ perf.on=false; const fps=perf.n/perf.t; if (fps<28 && shadowsOn && LS.get('hiraku.shadow')===null){ shadowsOn=false; renderer.shadowMap.enabled=false; sun.castShadow=false; Object.values(matCache).forEach(m=>m.needsUpdate=true); toast('動きを軽くするため影をOFFにしました（設定で戻せます）'); } } }
   // 昼夜（4分で1周）
   dayT = (now/1000/240)%1; const dl = 0.5-0.5*Math.cos(dayT*Math.PI*2); // 0夜 1昼
-  const night = Math.max(0, 1 - dl*2.2);
+  const night = Math.max(0, 1 - dl*2.2); nightV = night;
   if (dl>0.5) _sky.copy(T.eveC).lerp(T.dayC, (dl-0.5)*2); else _sky.copy(T.nightC).lerp(T.eveC, dl*2);
   scene.background.copy(_sky); scene.fog.color.copy(_sky);
   sun.intensity = (0.25+dl*0.85)*(T.sunMax||1); hemi.intensity = 0.35+dl*0.45; sun.color.setHSL(0.09, 0.5, 0.75+dl*0.2);
@@ -1891,7 +1981,7 @@ function frame(now){
     if (g.userData.bounce){ g.userData.bounce-=dt*3; const b=Math.max(0,g.userData.bounce); g.scale.set(1+b*0.12,1-b*0.15+Math.sin(b*Math.PI)*0.2,1+b*0.12); if (b<=0){ g.scale.set(1,1,1); g.userData.bounce=0; } } }
   for (let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.userData.life-=dt*(p.userData.decay||1.6); p.userData.v.y-=(p.userData.g!==undefined?p.userData.g:9)*dt; p.position.addScaledVector(p.userData.v, dt); p.rotation.x+=dt*5; p.rotation.z+=dt*3; p.scale.setScalar(Math.max(0.01,p.userData.life)*(p.userData.base||1)); if (p.userData.life<=0){ world.remove(p); particles.splice(i,1); } }
   selMesh.material.opacity = 0.45+0.25*Math.sin(t*6);
-  if (S){ updateWalkers(dt); ambUpdate(dt, t, night); roamUpdate(dt, t); bgmTick(); bubbleUpdate(); }
+  if (S){ updateWalkers(dt); ambUpdate(dt, t, night); roamUpdate(dt, t); bgmTick(); bubbleUpdate(); chatUpdate(dt); }
   renderer.render(scene, camera);
 }
 function resize(){ renderer.setSize(innerWidth, innerHeight, false); camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); updateCamera(); }
@@ -1919,7 +2009,7 @@ function boot(){
   requestAnimationFrame(frame);
   setTimeout(()=>$('loading').classList.add('hide'), 200);
 }
-window.__hiraku = { get S(){ return S; }, tiles, eco:()=>eco, act, calcEco, renderRes, tileAt, cam, updateCamera, applyTheme, walkers, bgm, showQuests, talk, walkerAt, showEditor, goIsland, get ED(){ return ED; } };
+window.__hiraku = { get S(){ return S; }, tiles, eco:()=>eco, act, calcEco, renderRes, tileAt, cam, updateCamera, applyTheme, walkers, bgm, showQuests, talk, walkerAt, showEditor, goIsland, chat, chatStart, chatEnd, curKind, get ED(){ return ED; } };
 try { boot(); } catch(e){ document.getElementById('loading').innerHTML = '<h1>エラー</h1><small>'+e.message+'</small>'; console.error(e); }
 })();
 </script>
