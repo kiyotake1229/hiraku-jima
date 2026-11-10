@@ -105,9 +105,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 @keyframes fl{0%{transform:translate(-50%,0);opacity:1}100%{transform:translate(-50%,-60px);opacity:0}}
 
 /* ---------- overlay ---------- */
-#ov{position:fixed;inset:0;z-index:20;background:rgba(8,14,22,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+#ov{position:fixed;inset:0;z-index:20;background:rgba(8,14,22,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:calc(var(--safe-t) + 14px) 16px calc(var(--safe-b) + 14px)}
 #ov.show{display:flex}
-.card{background:#16222f;border-radius:20px;padding:22px 20px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
+.card{background:#16222f;border-radius:20px;padding:22px 20px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .3s cubic-bezier(.2,1.4,.4,1);max-height:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+/* 画面より長いカードは中でスクロールする。閉じるボタンの行とタブは、スクロールしても見えたままにする */
+.card>.row:last-child:not(.ns){position:sticky;bottom:-22px;z-index:2;margin:10px -20px -22px;padding:10px 20px 22px;background:linear-gradient(rgba(22,34,47,0),#16222f 26%)}
+.card>.row.stk{position:sticky;bottom:-22px;z-index:2;margin:10px -20px 0;padding:10px 20px 12px;background:linear-gradient(rgba(22,34,47,0),#16222f 26%)}
 @keyframes pop{from{transform:scale(.8);opacity:0}to{transform:none;opacity:1}}
 .card h2{margin:0 0 6px;font-size:22px;display:flex;align-items:center;gap:8px}
 .card h2 svg{width:26px;height:26px}
@@ -143,7 +146,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 .q .qr svg{width:12px;height:12px}
 .q.done .qn{color:var(--accent2)}
 .q .btn{padding:7px 10px;font-size:12px;flex:0 0 auto}
-.ovtabs{display:flex;gap:4px;margin-bottom:6px;background:rgba(0,0,0,.25);border-radius:12px;padding:3px}
+.ovtabs{display:flex;gap:4px;position:sticky;top:-22px;z-index:2;margin:-11px -20px 1px;padding:14px 23px 8px;background:#16222f}
+.ovtabs::before{content:"";position:absolute;inset:11px 20px 5px;background:rgba(0,0,0,.25);border-radius:12px;z-index:-1}
 .ovtabs .tab{padding:7px;font-size:13px}
 .streak{display:flex;gap:4px;margin:8px 0 2px}
 .streak span{flex:1;height:28px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--sub)}
@@ -1186,9 +1190,9 @@ function showEditor(id){ if (visiting) return toast('見学中は作れません
     <div class="edpal" id="edPal">${VPAL.map((c,i)=>`<button class="sw3 ${i===0?'on':''}" data-col="${VCH[i+1]}" style="background:#${c.toString(16).padStart(6,'0')}"></button>`).join('')}<button class="sw3 er" data-col="0">${I.trash}</button></div>
     <div class="row"><button class="btn" id="edCopy">下の層をコピー</button><button class="btn" id="edClear">この層を消す</button><button class="btn" id="edAll">全部消す</button></div>
     <p id="edInfo" style="margin:6px 0"></p>
-    <div class="row"><button class="btn p" id="edSave">${cb?'保存する':'作る'}</button><button class="btn" id="bOk">やめる</button></div>
+    <div class="row stk"><button class="btn p" id="edSave">${cb?'保存する':'作る'}</button><button class="btn" id="bOk">やめる</button></div>
     ${(S.custom.length)?`<div class="sub">作った建物（タップで編集。置いたものも新しい形になる）</div><div class="edlist">${S.custom.map(c=>`<div class="edi"><img src="${THUMB['c'+c.id]||''}" data-edit="${c.id}"><span>${c.n}</span><button class="btn" data-code="${c.id}">コード</button></div>`).join('')}</div>`:''}
-    <div class="row"><button class="btn" id="edImport">${I.drag}建物コードから作る</button></div>`;
+    <div class="row ns"><button class="btn" id="edImport">${I.drag}建物コードから作る</button></div>`;
   overlay(html); $('bOk').onclick=()=>{ edClose(); closeOv(); };
   $('ovCard').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{ edClose(); showEditor(b.dataset.edit); });
   $('ovCard').querySelectorAll('[data-code]').forEach(b=>b.onclick=()=>{ const cb=S.custom.find(c=>c.id===b.dataset.code); edClose(); showBuildingCode(cb); });
@@ -1754,8 +1758,10 @@ function renderSnd(){ $('bSnd').innerHTML = audioOn?I.snd:I.mute; $('bSnd').clas
 $('bSet').innerHTML=I.set; $('bSet').onclick=showSettings;
 
 // ---------------------------------------------------------------- overlay
-function overlay(html){ $('ovCard').innerHTML=html; $('ov').classList.add('show'); }
-function closeOv(){ $('ov').classList.remove('show'); }
+function overlay(html){ // 同じ画面の描き直し（受け取りなど）ではスクロール位置を保ち、別の画面なら先頭に戻す
+  const c=$('ovCard'); const h=html.match(/<h2>([\s\S]*?)<\/h2>/), t=html.match(/class="tab on" data-t="(\w+)"/); const key=(h?h[1].replace(/<[^>]+>/g,''):'')+'|'+(t?t[1]:'');
+  const keep=(key===c._key && $('ov').classList.contains('show')) ? c.scrollTop : 0; c.innerHTML=html; c._key=key; $('ov').classList.add('show'); c.scrollTop=keep; }
+function closeOv(){ $('ov').classList.remove('show'); $('ovCard')._key=null; }
 $('ov').addEventListener('click', e=>{ if (e.target===$('ov')) closeOv(); });
 function showSettings(){
   if (visiting){ overlay(`<h2>${I.globe}見学中</h2><p>${S.name||'なまえのない'}島を見学しています。見ているあいだは何も変えられず、自分の島のデータもそのままです。</p><div class="row"><button class="btn p" id="bBack">自分の島にもどる</button><button class="btn" id="bOk">閉じる</button></div>`); $('bOk').onclick=closeOv; $('bBack').onclick=()=>$('visitBack').click(); return; }
