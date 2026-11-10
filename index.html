@@ -107,7 +107,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 /* ---------- overlay ---------- */
 #ov{position:fixed;inset:0;z-index:20;background:rgba(8,14,22,.78);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:calc(var(--safe-t) + 14px) 16px calc(var(--safe-b) + 14px)}
 #ov.show{display:flex}
-.card{background:#16222f;border-radius:20px;padding:22px 20px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .3s cubic-bezier(.2,1.4,.4,1);max-height:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.card{background:#16222f;border-radius:20px;padding:22px 20px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .3s cubic-bezier(.2,1.4,.4,1);max-height:100%;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;touch-action:pan-y}
 /* 画面より長いカードは中でスクロールする。閉じるボタンの行とタブは、スクロールしても見えたままにする */
 .card>.row:last-child:not(.ns){position:sticky;bottom:-22px;z-index:2;margin:10px -20px -22px;padding:10px 20px 22px;background:linear-gradient(rgba(22,34,47,0),#16222f 26%)}
 .card>.row.stk{position:sticky;bottom:-22px;z-index:2;margin:10px -20px 0;padding:10px 20px 12px;background:linear-gradient(rgba(22,34,47,0),#16222f 26%)}
@@ -125,6 +125,21 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--
 .sw2.on::after{transform:translateX(20px)}
 .unl{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
 .unl img{width:46px;height:46px;border-radius:10px;background:rgba(0,0,0,.25)}
+.un{width:56px;text-align:center}.un span{display:block;font-size:10px;color:var(--sub);line-height:1.3;margin-top:2px}
+.steps{display:flex;flex-direction:column;gap:8px;margin:4px 0}
+.stp{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px 12px;animation:stpIn .45s cubic-bezier(.2,1.2,.4,1) backwards}
+.stp:nth-child(2){animation-delay:.07s}.stp:nth-child(3){animation-delay:.14s}.stp:nth-child(4){animation-delay:.21s}
+@keyframes stpIn{from{transform:translateY(10px)}to{transform:none}}
+.stp .si{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(255,200,87,.28),rgba(255,159,67,.12));display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:var(--accent)}
+.stp .si svg{width:22px;height:22px}
+.stp b{display:block;font-size:14px}.stp span{display:block;font-size:12px;color:var(--sub);line-height:1.5}
+.gd{border-bottom:1px solid rgba(255,255,255,.08)}
+.gd summary{padding:11px 2px;font-weight:700;font-size:14px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}
+.gd summary::-webkit-details-marker{display:none}
+.gd summary .gt{flex:1}
+.gd summary::after{content:"";width:7px;height:7px;border-right:2px solid var(--sub);border-bottom:2px solid var(--sub);transform:rotate(45deg);transition:transform .2s;margin:0 6px 3px 2px}
+.gd[open] summary::after{transform:rotate(-135deg);margin-bottom:-3px}
+.gd ul{margin-top:0}.gd .zk{margin-top:0;margin-bottom:10px}
 
 #loading{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .4s}
 #loading.hide{opacity:0;pointer-events:none}
@@ -455,7 +470,7 @@ const B = {
   camp:    {n:'キャンプ場',   cat:'found', era:0, isle:'green',  cost:{c:400,w:80},    happy:12, coins:3, d:'みどりの島の名物。池のほとりのキャンプ場。幸福+12、コイン+3/秒。夜に火が灯る'},
   lodge:   {n:'森のロッジ',   cat:'found', era:0, isle:'forest', cost:{c:500,w:150},   pop:6, happy:8, coins:2, d:'深い森の島の名物。森に建つロッジ。6人が住めて幸福+8、コイン+2/秒'},
   treehouse:{n:'ツリーハウス村', cat:'found', era:0, isle:'forest', cost:{c:900,w:250}, pop:12, happy:10, h:1.2, d:'深い森の島の名物。木の上の家々。12人が住めて幸福+10'},
-  mine:    {n:'鉱山町',       cat:'found', era:0, isle:'rock',   cost:{c:800,s:150},   coins:12, pop:6, happy:-2, d:'岩の島の名物。坑道と家が集まった鉱山町。コイン+12/秒、6人が住める、幸福-2'},
+  mine:    {n:'鉱山町',       cat:'found', era:0, isle:'rock',   cost:{c:800,s:150},   coins:12, pop:6, happy:-2, stone:0.2, d:'岩の島の名物。坑道と家が集まった鉱山町。コイン+12/秒、隣の岩1つにつき石+0.2/秒、6人が住める、幸福-2'},
   fort:    {n:'岩山の砦',     cat:'found', era:0, isle:'rock',   cost:{c:1500,s:300},  pop:10, happy:8, coins:4, h:1.2, d:'岩の島の名物。岩を積んだ砦。10人が住めて幸福+8、コイン+4/秒'},
   kamakura:{n:'かまくら村',   cat:'found', era:0, isle:'snow',   cost:{c:300,w:40},    pop:8, happy:10, d:'雪の島の名物。雪で作った家の村。8人が住めて幸福+10。夜に光る'},
   icefes:  {n:'雪まつり',     cat:'found', era:0, isle:'snow',   cost:{c:1200,s:100},  happy:22, coins:5, d:'雪の島の名物。氷の彫刻が並ぶお祭り。幸福+22、コイン+5/秒'},
@@ -1038,16 +1053,31 @@ function renderItems(){
 }
 function nextHint(){ // いまの状況から「次にやること」を1つ選ぶ
   const homes=cntB(t=>B[t.b].pop), farms=cntB(t=>B[t.b].food);
-  if (!homes){ return S.wood<10 ? '森をタップして<b>伐採</b>し、木材を集めよう' : '「住まい」から<b>小さな家</b>を建てよう'; }
-  if (!farms && S.pop>=eco.food) return '食料が足りない。「仕事」の<b>畑</b>を建てると人口が増える';
-  if (S.pop>=eco.popTarget && eco.popTarget<eco.housing && eco.food<=eco.housing) return '食料が上限。<b>畑</b>や<b>風車</b>で食料を増やそう';
-  if (S.pop>=eco.popTarget && eco.housing<=eco.food) return '家がいっぱい。「住まい」を増やそう';
+  let freeLand=0, ownForest=0; for (const t of tiles){ if (!t.own) continue; if (t.t==='f') ownForest++; else if (!t.b && t.t==='g' && !(t.p&&P[t.p].water)) freeLand++; }
+  // 建てたくても建てられない理由（木材 w・コイン c・場所）があれば、そちらを先に案内する
+  const short = (w, c) => {
+    if (S.wood<w && eco.wood<=0) return ownForest ? '木材が足りない。「開拓」の<b>伐採</b>で森を切ろう' : '木材が足りない。「開拓」で森のある土地を買って<b>伐採</b>しよう';
+    if (S.wood<w) return '木材がたまるのを待とう。森のそばに<b>木こり小屋</b>を増やすと早い';
+    if (S.coins<c) return 'コインが足りない。建物を<b>タップ</b>するとコインがもらえる';
+    if (!freeLand) return '建てる場所がない。「開拓」で暗い土地を買って広げよう';
+    return null; };
+  if (!homes) return short(10,20) || '「住まい」から<b>小さな家</b>を建てよう';
+  if (!farms && S.pop>=eco.food) return short(5,15) || '食料が足りない。「仕事」の<b>畑</b>を建てると人口が増える';
+  // 人口が頭打ちのときの案内。荒れ地のあいだはこれを最優先、集落からはほかの案内と交代で出す
+  const grow = (S.pop>=eco.popTarget && eco.popTarget<eco.housing && eco.food<=eco.housing) ? (short(5,15) || '食料が上限。<b>畑</b>や<b>風車</b>で食料を増やそう')
+             : (S.pop>=eco.popTarget && eco.housing<=eco.food) ? (short(10,20) || '家がいっぱい。「住まい」を増やそう') : null;
+  if (grow && S.era<1) return grow;
   if (eco.hm<1) return '幸福度が低い。「飾り」を置くと人が増える';
   if (claimableCount()>0) return '右上のリストに<b>ごほうび</b>がある。受け取ろう';
-  if (S.letter && !S.letter.done){ const l=LETTERS.find(x=>x.id===S.letter.id); if (l) return `手紙: ${l.from}「${l.t}」`; }
-  if (S.era>=2 && !hasPort() && S.islands && S.islands.length<2 && tiles.some((t,i)=>t.own&&t.t!=='w'&&neighbors4(i).some(j=>tiles[j].t==='w'))) return '海ぎわに<b>港</b>を建てると、船で新しい島を探せる';
-  const nx=ERAS[S.era+1]; if (nx) return `次は<b>${nx.n}</b>（人口${nx.pop}）。家と畑を増やして、道と飾りで底上げ`;
-  return '地面を塗って、自分だけの模様を描こう';
+  // ここからは急がない案内。15秒ごとに順番に出す
+  const opt=[]; if (grow) opt.push(grow);
+  if (S.era>=1 && !S.found.length) opt.push('<b>合体</b>を試そう。小さな家を3軒、となり合わせに建てると…？');
+  if (S.letter && !S.letter.done){ const l=LETTERS.find(x=>x.id===S.letter.id); if (l) opt.push(`手紙: ${l.from}「${l.t}」`); }
+  if (S.era>=2 && !hasPort() && S.islands && S.islands.length<2 && tiles.some((t,i)=>t.own&&t.t!=='w'&&neighbors4(i).some(j=>tiles[j].t==='w'))) opt.push('海ぎわに<b>港</b>を建てると、船で新しい島を探せる');
+  if (S.found.length){ const sp=kindSpecials(curKind()).find(r=>!S.found.includes(r.id)); if (sp) opt.push('この島の<b>名物</b>: '+sp.hint.replace(/^[^:]+: /,'')); }
+  const nx=ERAS[S.era+1]; if (nx) opt.push(`次は<b>${nx.n}</b>（人口${nx.pop}）。家と畑を増やして、道と飾りで底上げ`);
+  if (!opt.length) return '地面を塗って、自分だけの模様を描こう';
+  return opt[Math.floor(Date.now()/15000)%opt.length];
 }
 let lastHint='';
 function setHint(){
@@ -1151,8 +1181,8 @@ function updateWalkers(dt){
   if (walkers.length<want){ const cands=[]; for (let i=0;i<N*N;i++) if (walkable(i)) cands.push(i); if (cands.length){ const g=makeWalker(); assignPerson(g); const i=cands[(Math.random()*cands.length)|0]; g.userData.i=i; g.userData.from=i; g.position.set(i%N,0.5,(i/N)|0); world.add(g); walkers.push(g); } }
   while (walkers.length>want) world.remove(walkers.pop());
   for (let w=walkers.length-1; w>=0; w--){ const g=walkers[w]; const u=g.userData;
+    if (u.pause) continue; // 会話中はその場で止まる
     if (u.t>=1){
-      if (u.pause) continue;
       const ns=neighbors4(u.i).filter(walkable);
       if (!ns.length){ world.remove(g); walkers.splice(w,1); continue; }
       const roads=ns.filter(j=>(tiles[j].p&&P[tiles[j].p].road) || tiles[j].b==='bridge'); const pick=(roads.length && Math.random()<0.85) ? roads : ns; const j=pick[(Math.random()*pick.length)|0];
@@ -1272,7 +1302,7 @@ const bubble={w:null, t:0};
 function walkerAt(cx, cy){ ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1); ray.setFromCamera(ndc, camera); const hits=ray.intersectObjects(walkers, true); if (!hits.length) return null; let o=hits[0].object; while (o && !walkers.includes(o)) o=o.parent; return o; }
 function talk(g){ ensurePeople(); const p=S.people[g.userData.pid||0]; if (!p) return; bubble.w=g; bubble.t=performance.now(); $('bubble').innerHTML=`<b>${p.n}</b><span class="tag">${TRAITS[p.tr].n}</span><br>${lineFor(p)}`; $('bubble').classList.add('show'); g.userData.bounce=1; sfx('tick'); haptic(6); if (!visiting) count('talk'); }
 function bubbleUpdate(){ if (!bubble.w) return; if (performance.now()-bubble.t>4500 || !walkers.includes(bubble.w)){ bubble.w=null; $('bubble').classList.remove('show'); return; }
-  const v=new THREE.Vector3(); bubble.w.getWorldPosition(v); v.y+=0.55; v.project(camera); $('bubble').style.left=((v.x+1)/2*innerWidth)+'px'; $('bubble').style.top=((1-v.y)/2*innerHeight)+'px'; }
+  placeBubble($('bubble'), bubble.w); }
 
 // 住民どうしの会話（近くに立った2人が、かけ合いの吹き出しを出す）
 const CHATS=[
@@ -1306,11 +1336,16 @@ function chatLines(pa, pb){ let pool=[]; CHAT_CTX.forEach(c=>{ try{ if (c.ok()) 
   if (TRAIT_CHATS[pa.tr] && Math.random()<0.5) pool=pool.concat(TRAIT_CHATS[pa.tr]); if (!pool.length || Math.random()<0.4) pool=pool.concat(CHATS);
   const L=pool[(Math.random()*pool.length)|0]; const f=(t,you)=>fillLine(t).replace('{you}', you.n); return [f(L[0],pb), f(L[1],pa)]; }
 function chatStart(a, b){ ensurePeople(); const pa=S.people[a.userData.pid||0], pb=S.people[b.userData.pid||0]; if (!pa||!pb) return;
-  chat.a=a; chat.b=b; chat.t=performance.now(); chat.l=chatLines(pa,pb); [a,b].forEach(w=>{ const u=w.userData; u.pause=true; u.t=1; w.position.set(u.i%N, 0.5, (u.i/N)|0); });
+  chat.a=a; chat.b=b; chat.t=performance.now(); chat.l=chatLines(pa,pb); a.userData.pause=true; b.userData.pause=true;
   a.rotation.y=Math.atan2(b.position.x-a.position.x, b.position.z-a.position.z); b.rotation.y=a.rotation.y+Math.PI;
   $('cb1').innerHTML=`<b>${pa.n}</b> ${chat.l[0]}`; $('cb2').innerHTML=`<b>${pb.n}</b> ${chat.l[1]}`; $('cb1').classList.add('show'); a.userData.bounce=1; if (!visiting) count('chat'); }
 function chatEnd(){ if (chat.a) chat.a.userData.pause=false; if (chat.b) chat.b.userData.pause=false; chat.a=chat.b=null; $('cb1').classList.remove('show'); $('cb2').classList.remove('show'); }
-function placeBubble(el, w){ const v=new THREE.Vector3(); w.getWorldPosition(v); v.y+=0.55; v.project(camera); el.style.left=((v.x+1)/2*innerWidth)+'px'; el.style.top=((1-v.y)/2*innerHeight)+'px'; }
+const _bv=new THREE.Vector3(); let _safeB=0, _safeT=0;
+function screenPos(w){ w.getWorldPosition(_bv); _bv.y+=0.55; _bv.project(camera); return {x:(_bv.x+1)/2*innerWidth, y:(1-_bv.y)/2*innerHeight, z:_bv.z}; }
+function safeBottom(){ const n=performance.now(); if (n-_safeT>1000){ _safeT=n; _safeB=innerHeight-$('bottom').offsetHeight-6; } return _safeB; }
+// m: 画面の端からどれだけ内側を「見えている」とするか（会話の相手えらびは広め、表示の判定は狭め）
+function inView(p, m){ return p.z<1 && p.x>m && p.x<innerWidth-m && p.y>150 && p.y<safeBottom(); }
+function placeBubble(el, w){ const p=screenPos(w); el.style.left=p.x+'px'; el.style.top=p.y+'px'; el.style.visibility = inView(p, 16) ? '' : 'hidden'; }
 function chatUpdate(dt){
   if (chat.a){ const el=performance.now()-chat.t;
     if (el>5800 || !walkers.includes(chat.a) || !walkers.includes(chat.b)){ chatEnd(); chatTimer=10+Math.random()*12; return; }
@@ -1318,8 +1353,9 @@ function chatUpdate(dt){
     if (el>3000) $('cb1').classList.remove('show');
     placeBubble($('cb1'), chat.a); placeBubble($('cb2'), chat.b); return; }
   chatTimer-=dt; if (chatTimer>0 || walkers.length<2) return;
-  const st=walkers.filter(w=>w!==bubble.w && w.userData.t>=0.6); let best=null;
-  for (let i=0;i<st.length && !best;i++) for (let j=i+1;j<st.length;j++){ const a=st[i].userData.i, b=st[j].userData.i; const d=Math.abs(a%N-b%N)+Math.abs(((a/N)|0)-((b/N)|0)); if (d<=1){ best=[st[i],st[j]]; break; } }
+  if ($('ov').classList.contains('show')){ chatTimer=2; return; } // カードが出ているあいだは始めない
+  const st=walkers.filter(w=>w!==bubble.w && inView(screenPos(w), 70)); let best=null;
+  for (let i=0;i<st.length && !best;i++) for (let j=i+1;j<st.length;j++){ const d=Math.hypot(st[i].position.x-st[j].position.x, st[i].position.z-st[j].position.z); if (d>=0.35 && d<=1.3){ best=[st[i],st[j]]; break; } }
   if (best) chatStart(best[0], best[1]); else chatTimer=1.5; }
 
 // ---------------------------------------------------------------- 毎日コツコツ（ログイン・おねがい・目標）
@@ -1539,8 +1575,9 @@ function showQuests(tab, extraHtml){
   } else if (ovTab==='badges'){
     const doneN=S.goals.length; const nt=nextTitle();
     body += `<div class="title-badge">${I.medal}${titleOf()}</div><div class="qr" style="margin-bottom:6px">バッジ ${doneN} / ${GOALS.length}${nt?`　次の称号まであと${nt.n-doneN}個`:''}</div>`;
-    body += `<div class="sub" style="margin-top:12px">図鑑（合体で見つけたもの ${S.found.length} / ${FUSIONS.length}）</div><p style="margin:0 0 6px">建物のまわりに決まった組み合わせがそろうと、新しいものに変わる。まだ見つけていないものはヒントだけ。</p><div class="zk">` + FUSIONS.map(r=>{ const f=S.found.includes(r.id); const b=B[r.res];
-      return f ? `<div class="zi on"><img src="${THUMB[r.res]||''}"><div class="zn">${b.n}</div><div class="zh">${recipeText(r)}</div></div>` : `<div class="zi"><div class="zq">?</div><div class="zn">？？？</div><div class="zh">${r.hint}</div></div>`; }).join('') + `</div>`;
+    const ck=curKind(); const zi=r=>{ const f=S.found.includes(r.id); const b=B[r.res]; return f ? `<div class="zi on"><img src="${THUMB[r.res]||''}"><div class="zn">${b.n}</div><div class="zh">${recipeText(r)}</div></div>` : `<div class="zi"><div class="zq">?</div><div class="zn">？？？</div><div class="zh">${r.hint}</div></div>`; };
+    const zg=[[`この島の名物（${KINDS[ck].n}）`, FUSIONS.filter(r=>r.kind===ck), true], ['きほんの合体', FUSIONS.filter(r=>!r.kind && !B[r.res].world), true], ['世界ごとの合体', FUSIONS.filter(r=>!r.kind && B[r.res].world), S.world!=='island'], ['ほかの島の名物', FUSIONS.filter(r=>r.kind && r.kind!==ck), false]];
+    body += `<div class="sub" style="margin-top:12px">図鑑（合体で見つけたもの ${S.found.length} / ${FUSIONS.length}）</div><p style="margin:0 0 6px">建物のまわりに決まった組み合わせがそろうと、新しいものに変わる。まだ見つけていないものはヒントだけ。</p>` + zg.map(([t,rs,open])=>`<details class="gd"${open?' open':''}><summary><span class="gt">${t}</span><span class="tag">${rs.filter(r=>S.found.includes(r.id)).length} / ${rs.length}</span></summary><div class="zk">${rs.map(zi).join('')}</div></details>`).join('');
     body += `<div class="sub" style="margin-top:12px">バッジ</div><div class="badges">` + GOALS.map(g=>{ const done=S.goals.includes(g.id); const cur=Math.min(g.need,g.v()); return `<div class="bd ${done?'done':''}" data-b="${g.id}"><div class="ic">${goalIcon(g.id)}</div><div class="bn">${g.n}</div>${done?'':`<div class="bp"><i style="width:${cur/g.need*100}%"></i></div>`}</div>`; }).join('') + `</div>`;
   } else {
     const list = GOALS.map(g=>({g, done:S.goals.includes(g.id), can:g.v()>=g.need})).sort((a,b)=> ((b.can&&!b.done)?1:0)-((a.can&&!a.done)?1:0) || (a.done?1:0)-(b.done?1:0));
@@ -1801,7 +1838,7 @@ function showSettings(){
   $('swSnd').onclick=()=>{ audioOn=!audioOn; LS.set('hiraku.snd', audioOn?'1':'0'); renderSnd(); $('swSnd').classList.toggle('on',audioOn); };
   $('swSh').onclick=()=>{ shadowsOn=!shadowsOn; LS.set('hiraku.shadow', shadowsOn?'1':'0'); renderer.shadowMap.enabled=shadowsOn; sun.castShadow=shadowsOn; matCache && Object.values(matCache).forEach(m=>m.needsUpdate=true); $('swSh').classList.toggle('on',shadowsOn); };
   $('inName').onchange=()=>{ S.name=$('inName').value.trim().slice(0,12); renderRes(); };
-  $('bOk').onclick=()=>{ S.name=$('inName').value.trim().slice(0,12); renderRes(); closeOv(); }; $('bHelp').onclick=showHelp;
+  $('bOk').onclick=()=>{ S.name=$('inName').value.trim().slice(0,12); renderRes(); closeOv(); }; $('bHelp').onclick=showGuide;
   $('bReset').onclick=()=>{ overlay(`<h2>最初から？</h2><p>いまの島は消えます。この操作は戻せません。</p><div class="row"><button class="btn" id="bNo">やめる</button><button class="btn d" id="bYes">消して始める</button></div>`);
     $('bNo').onclick=showSettings; $('bYes').onclick=()=>{ noSave=true; LS.del(SAVE_KEY); location.reload(); }; };
 }
@@ -1811,34 +1848,59 @@ function showShapeSelect(){
   overlay(html);
   $('ovCard').querySelectorAll('[data-shape]').forEach(b=>b.onclick=()=>{ S.shape=b.dataset.shape; ensureIslands(); S.islands[0].shape=S.shape; genMap(S.seed, S.shape); calcEco(); applyTheme(); sfx('land'); save(); showHelp(); });
 }
-function showHelp(){
-  overlay(`<h2>${I.land}遊び方</h2><ul>
-    <li><b>開拓</b>タブで暗い土地を買い、森を<b>伐採</b>、岩を<b>採掘</b>して材料を集める</li>
-    <li><b>住まい</b>を建てると人が住む。<b>畑</b>の食料の分だけ人口が増える</li>
-    <li>人口が増えると 集落→村→町→都市→大都市 と発展し、新しい建物が増える</li>
-    <li>人口と幸福度でコインが毎秒たまる。建物をタップしてもコインがもらえる</li>
-    <li><b>道</b>に面した家は人口+25%。<b>飾り</b>で幸福度を上げるとコインも増える</li>
-    <li><b>塗る</b>タブで地面に色を塗って、自分だけの模様の世界を描こう</li>
-    <li><b>毎日コツコツ</b>: 毎日開くと連続ボーナス。「今日のおねがい」3つと「目標」を達成すると<b>星</b>がもらえる</li>
-    <li>星は さくら・灯台・神社・気球 と交換。建物は<b>強化</b>でLv3まで育つ</li>
-    <li><b>季節</b>は日付で変わり、限定の建物と季節のおねがいが出る。星で<b>魔法の国・和風の城下町・未来都市・海底都市・空中都市</b>の世界をひらける（右の地球ボタン）。世界ごとに住民の姿とBGMが変わる</li>
-    <li>カメラボタンで<b>島の写真</b>を撮って共有できる。住民からの<b>手紙</b>の願いをかなえると星がもらえる</li>
-    <li>設定の「データを書き出す」で、機種変更しても島を引き継げる</li>
-    <li>駅・モール・スタジアムは<b>2×2マス</b>の大型建物。「回転」で建物の向きを変えられる</li>
-    <li>集落になると海に<b>橋</b>をかけられる（開拓タブ）。橋をつなげて隣の島を開拓しよう。月曜には<b>先週のふりかえり</b>、達成した目標は<b>バッジ</b>に</li>
-    <li>村になったら海ぎわに<b>港</b>を建て、右の船ボタンから<b>新しい島</b>を探せる（星とコイン）。島は何度でも増やせて、森の島・岩の島・雪の島などがある</li>
-    <li>住まい・仕事・飾りタブの「<b>じぶんの建物</b>」で、ブロックを積んで自分だけの建物を作れる（8×8×6）。作った建物は島コードにも入るので、見学した人にも見える。<b>建物コード</b>で建物だけを人に渡せる</li>
-    <li>島コードの画面から<b>みんなの島ギャラリー</b>に投稿できる。紹介ページ（about.html）に並び、だれでも見学できる</li>
-    <li>歩いている<b>住民</b>をタップすると話せる。名前と性格があって、島の様子で話が変わる。近くに立った住民どうしも、かけ合いで話す</li>
-    <li>建物のまわりに決まった組み合わせがそろうと<b>合体</b>して新しいものになる（家3軒＋公園→団地 など）。見つけたものは<b>図鑑</b>に。島の種類ごとに、その島でしか合体しない<b>名物</b>もある（雪の島のかまくら村 など）。設定の<b>島コード</b>で島を保存・共有でき、人の島を<b>見学</b>できる</li>
-    <li>1本指でドラッグ: 移動 / 2本指: ズーム / 右の回転ボタン: 視点回転</li></ul>
-    <div class="row"><button class="btn p" id="bOk">はじめる</button></div>`);
+const GUIDE = [
+  ['きほん', [
+    '<b>開拓</b>タブで暗い土地を買い、森を<b>伐採</b>、岩を<b>採掘</b>して材料を集める',
+    '<b>住まい</b>を建てると人が住む。<b>畑</b>の食料の分だけ人口が増える',
+    '人口が増えると 集落→村→町→都市→大都市 と発展し、新しい建物が増える',
+    '人口と幸福度でコインが毎秒たまる。建物をタップしてもコインがもらえる',
+    '<b>道</b>に面した家は人口+25%。<b>飾り</b>で幸福度を上げるとコインも増える',
+    '<b>塗る</b>タブで地面に色を塗って、自分だけの模様の世界を描こう',
+    '1本指でドラッグ: 移動 / 2本指: ズーム / 右の回転ボタン: 視点回転',
+  ]],
+  ['毎日コツコツ', [
+    '<b>毎日コツコツ</b>: 毎日開くと連続ボーナス。「今日のおねがい」3つと「目標」を達成すると<b>星</b>がもらえる',
+    '星は さくら・灯台・神社・気球 と交換。建物は<b>強化</b>でLv3まで育つ',
+    'カメラボタンで<b>島の写真</b>を撮って共有できる。住民からの<b>手紙</b>の願いをかなえると星がもらえる',
+  ]],
+  ['季節と世界', [
+    '<b>季節</b>は日付で変わり、限定の建物と季節のおねがいが出る。星で<b>魔法の国・和風の城下町・未来都市・海底都市・空中都市</b>の世界をひらける（右の地球ボタン）。世界ごとに住民の姿とBGMが変わる',
+  ]],
+  ['合体・橋・島', [
+    '建物のまわりに決まった組み合わせがそろうと<b>合体</b>して新しいものになる（家3軒＋公園→団地 など）。見つけたものは<b>図鑑</b>に。島の種類ごとに、その島でしか合体しない<b>名物</b>もある（雪の島のかまくら村 など）。設定の<b>島コード</b>で島を保存・共有でき、人の島を<b>見学</b>できる',
+    '集落になると海に<b>橋</b>をかけられる（開拓タブ）。橋をつなげて隣の島を開拓しよう。月曜には<b>先週のふりかえり</b>、達成した目標は<b>バッジ</b>に',
+    '村になったら海ぎわに<b>港</b>を建て、右の船ボタンから<b>新しい島</b>を探せる（星とコイン）。島は何度でも増やせて、森の島・岩の島・雪の島などがある',
+    '駅・モール・スタジアムは<b>2×2マス</b>の大型建物。「回転」で建物の向きを変えられる',
+  ]],
+  ['住民', [
+    '歩いている<b>住民</b>をタップすると話せる。名前と性格があって、島の様子で話が変わる。近くに立った住民どうしも、かけ合いで話す',
+  ]],
+  ['つくる・見せる・引き継ぐ', [
+    '住まい・仕事・飾りタブの「<b>じぶんの建物</b>」で、ブロックを積んで自分だけの建物を作れる（8×8×6）。作った建物は島コードにも入るので、見学した人にも見える。<b>建物コード</b>で建物だけを人に渡せる',
+    '島コードの画面から<b>みんなの島ギャラリー</b>に投稿できる。紹介ページ（about.html）に並び、だれでも見学できる',
+    '設定の「データを書き出す」で、機種変更しても島を引き継げる',
+  ]],
+];
+function showGuide(){ // くわしい遊び方（設定から開く）
+  overlay(`<h2>${I.land}遊び方</h2>` + GUIDE.map(([t,ls],i)=>`<details class="gd"${i===0?' open':''}><summary><span class="gt">${t}</span></summary><ul>${ls.map(l=>`<li>${l}</li>`).join('')}</ul></details>`).join('') + `<div class="row"><button class="btn p" id="bOk">閉じる</button></div>`);
   $('bOk').onclick=closeOv;
 }
+function showHelp(){ // はじめての人に見せる短い案内。細かいことは下のヒントと「くわしく見る」に任せる
+  overlay(`<h2>${I.land}ようこそ、ひらく島へ</h2><p>森を切り開いて家を建て、自分だけの街を育てよう。まずはこの4つだけ。</p>
+    <div class="steps">
+      <div class="stp"><div class="si">${I.build}</div><div><b>家を建てる</b><span>下の「住まい」から小さな家をえらんで、明るい土地をタップ</span></div></div>
+      <div class="stp"><div class="si">${I.coin}</div><div><b>畑を作る</b><span>「仕事」の畑で食料を増やすと、人口が増える</span></div></div>
+      <div class="stp"><div class="si">${I.axe}</div><div><b>材料を集める</b><span>「開拓」で森を伐採して木材に。暗い土地を買うと島が広がる</span></div></div>
+      <div class="stp"><div class="si">${I.gift}</div><div><b>毎日すこしずつ</b><span>右上のリストに毎日のごほうび。人口が増えると集落、村、町へ育つ</span></div></div>
+    </div>
+    <p style="margin:10px 0 0;font-size:12px">迷ったら、画面のいちばん下に出る「次にやること」を見てね。くわしい遊び方は設定からいつでも読める。</p>
+    <div class="row"><button class="btn" id="bMore">くわしく見る</button><button class="btn p" id="bOk">はじめる</button></div>`);
+  $('bOk').onclick=closeOv; $('bMore').onclick=showGuide;
+}
 function eraUp(newEra){
-  S.era = newEra; const e=ERAS[newEra]; const unl = Object.keys(B).filter(k=>B[k].era===newEra);
+  S.era = newEra; const e=ERAS[newEra]; const unl = Object.keys(B).filter(k=>B[k].era===newEra && B[k].cat!=='found' && B[k].cat!=='none' && !B[k].custom && (!B[k].world || B[k].world===S.world) && (B[k].season==null || B[k].season===seasonIdx()));
   sfx('fanfare'); haptic([30,40,30]);
-  overlay(`<h2>${I.star}${e.n} になった！</h2><p>${e.msg}</p>${unl.length?`<p style="margin-bottom:4px">新しく建てられるもの</p><div class="unl">${unl.map(k=>`<img src="${THUMB[k]}" title="${B[k].n}">`).join('')}</div>`:''}
+  overlay(`<h2>${I.star}${e.n} になった！</h2><p>${e.msg}</p>${unl.length?`<p style="margin-bottom:4px">新しく建てられるもの</p><div class="unl">${unl.map(k=>`<div class="un"><img src="${THUMB[k]}" alt=""><span>${B[k].n}</span></div>`).join('')}</div>`:''}
     <div class="row"><button class="btn p" id="bOk">つづける</button></div>`);
   $('bOk').onclick=closeOv; renderItems(); renderRes();
 }
